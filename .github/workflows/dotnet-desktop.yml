@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: docker build ./auth-api -t brunobentocaina/iscas-lune-api:latest
+      run: docker build ./iscaslune.Api -t brunobentocaina/iscas-lune-api:latest
     - name: Push
       run: |
         docker login -u brunobentocaina -p ${{ secrets.DOCKER_HUB_KEY }}
