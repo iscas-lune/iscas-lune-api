@@ -37,15 +37,5 @@
       "applicationUrl": "http://localhost:41841",
       "sslPort": 44371
     }
-  },
-  "Kestrel": {
-    "EndPoints": {
-      "Http": {
-        "Url": "http://*:80"
-      },
-      "Https": {
-        "Url": "https://*:443"
-      }
-    }
   }
 }
