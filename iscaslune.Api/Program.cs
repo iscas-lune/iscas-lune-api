@@ -18,6 +18,11 @@ internal class Program
         builder.Services.InjectApplication();
         builder.Services.InjectCors();
 
+        builder.Services.AddHttpsRedirection(options =>
+        {
+            options.HttpsPort = 443;
+        });
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
