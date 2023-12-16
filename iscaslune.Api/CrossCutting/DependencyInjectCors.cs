@@ -5,7 +5,6 @@ public static class DependencyInjectCors
     public static void InjectCors(this IServiceCollection services)
     {
         var origin = EnvironmentVariable.GetVariable("URL_BASE_FRONT");
-        Console.WriteLine(origin);
         services.AddCors(options =>
         {
             options.AddPolicy(name: "iscasluneorigin",
