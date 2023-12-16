@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: docker build ./auth-api -t brunobentocaina/open-adm-auth-api:latest
+      run: docker build ./iscaslune.Api -t brunobentocaina/open-adm-auth-api:latest
     - name: Push
       run: |
         docker login -u brunobentocaina -p ${{ secrets.DOCKER_HUB_KEY }}
