@@ -20,8 +20,7 @@ public class BannerConfiguration : IEntityTypeConfiguration<Banner>
         builder.Property(x => x.Numero)
             .ValueGeneratedOnAdd();
         builder.Property(x => x.Ativo)
-            .IsRequired()
-            .HasDefaultValue(true);
+            .IsRequired();
         builder.Property(x => x.Foto)
             .IsRequired();
     }

@@ -26,6 +26,9 @@ public class ProdutoViewModel : BaseModel<Produto, ProdutoViewModel>
     {
         if (entity == null) return null;
 
+        Id = entity.Id;
+        DataCriacao = entity.DataCriacao;
+        Numero = entity.Numero;
         Descricao = entity.Descricao;
         EspecificacaoTecnica = entity.EspecificacaoTecnica;
         Foto = Encoding.UTF8.GetString(entity.Foto);

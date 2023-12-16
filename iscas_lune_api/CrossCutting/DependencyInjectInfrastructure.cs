@@ -1,4 +1,7 @@
-﻿using iscaslune.Api.Infrastructure.Cached;
+﻿using iscas_lune_api.Infrastructure.Cached;
+using iscas_lune_api.Infrastructure.Interfaces;
+using iscas_lune_api.Infrastructure.Repositories;
+using iscaslune.Api.Infrastructure.Cached;
 using iscaslune.Api.Infrastructure.Interfaces;
 using iscaslune.Api.Infrastructure.Repositories;
 
@@ -23,5 +26,7 @@ public static class DependencyInjectInfrastructure
 
         services.AddScoped<BannerRepository>();
         services.AddScoped<IBannerRepository, BannerCached>();
+        services.AddScoped<ICorProdutoRepository, CorProdutoRepository>();
+        services.AddScoped<ITamanhoProdutoRepository, TamanhoProdutoRepository>();
     }
 }

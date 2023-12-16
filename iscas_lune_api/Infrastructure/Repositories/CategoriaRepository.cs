@@ -26,11 +26,21 @@ public class CategoriaRepository
 
     public async Task<List<Categoria>?> GetCategoriasAsync(PaginacaoCategoriaDto paginacaoCategoriaDto)
     {
-        return await _context
+        var categorias = await _context
             .Categorias
             .AsQueryable()
             .Include(x => x.Produtos)
             .FilterAll(paginacaoCategoriaDto)
             .ToListAsync();
+
+        foreach (var categoria in categorias)
+        {
+            categoria.Produtos = categoria
+                .Produtos
+                .Take(3)
+                .ToList();
+        }
+
+        return categorias;
     }
 }

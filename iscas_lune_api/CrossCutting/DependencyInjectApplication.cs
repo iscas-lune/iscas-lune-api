@@ -1,4 +1,6 @@
-﻿using iscaslune.Api.Application.Interfaces;
+﻿using iscas_lune_api.Application.Interfaces;
+using iscas_lune_api.Application.Services;
+using iscaslune.Api.Application.Interfaces;
 using iscaslune.Api.Application.Services;
 
 namespace iscaslune.Api.CrossCutting;
@@ -19,5 +21,7 @@ public static class DependencyInjectApplication
         services.AddScoped<ICategoriaService, CategoriaService>();
         services.AddScoped<IBannerService, BannerService>();
         services.AddScoped<IProdutoService, ProdutoService>();
+        services.AddScoped<ICorProdutoService, CorProdutoService>();
+        services.AddScoped<ITamanhoProdutoService, TamanhoProdutoService>();
     }
 }

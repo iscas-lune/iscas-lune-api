@@ -34,4 +34,10 @@ public class ProdutoService
         var produtos = await _produtoRepository.GetProdutosAsync(paginacaoProdutoDto);
         return produtos?.Select(x => new ProdutoViewModel().ForModel(x) ?? new()).ToList();
     }
+
+    public async Task<List<ProdutoViewModel>?> GetProdutosByCategoriaAsync(Guid categoriaId)
+    {
+        var produtos = await _produtoRepository.GetProdutosByCategoriaAsync(categoriaId);
+        return produtos?.Select(x => new ProdutoViewModel().ForModel(x) ?? new()).ToList();
+    }
 }

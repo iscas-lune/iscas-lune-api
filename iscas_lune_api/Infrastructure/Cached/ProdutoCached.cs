@@ -31,6 +31,14 @@ public class ProdutoCached
             if(produto != null)
             {
                 produto.Categoria.Produtos = new();
+                produto.Cores.ForEach(cor =>
+                {
+                    cor.Produtos = new();
+                });
+                produto.Tamanhos.ForEach(tamanho =>
+                {
+                    tamanho.Produtos = new();
+                });
                 await _cachedService.SetItemAsync(key, produto);
             }
         }
@@ -52,14 +60,51 @@ public class ProdutoCached
 
             if(produtos != null && produtos.Count > 0)
             {
-                produtos.ForEach(x =>
+                produtos.ForEach(produto =>
                 {
-                    x.Categoria.Produtos = new();
+                    produto.Categoria.Produtos = new();
+                    produto.Cores.ForEach(cor =>
+                    {
+                        cor.Produtos = new();
+                    });
+                    produto.Tamanhos.ForEach(tamanho =>
+                    {
+                        tamanho.Produtos = new();
+                    });
                 });
 
                 await _cachedService.SetListItemAsync(_keyList, produtos);
             }
 
+        }
+
+        return produtos;
+    }
+
+    public async Task<List<Produto>?> GetProdutosByCategoriaAsync(Guid categoriaId)
+    {
+        var produtos = await _cachedService.GetListItemAsync(_keyList + categoriaId);
+
+        if(produtos == null)
+        {
+            produtos = await _produtoRepository.GetProdutosByCategoriaAsync(categoriaId);
+            if(produtos?.Count > 0)
+            {
+                produtos.ForEach(produto =>
+                {
+                    produto.Categoria.Produtos = new();
+                    produto.Cores.ForEach(cor =>
+                    {
+                        cor.Produtos = new();
+                    });
+                    produto.Tamanhos.ForEach(tamanho =>
+                    {
+                        tamanho.Produtos = new();
+                    });
+                });
+
+                await _cachedService.SetListItemAsync(_keyList + categoriaId, produtos);
+            }
         }
 
         return produtos;

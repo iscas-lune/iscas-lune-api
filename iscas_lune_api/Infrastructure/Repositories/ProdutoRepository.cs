@@ -32,7 +32,22 @@ public class ProdutoRepository
         return await _context
             .Produtos
             .AsQueryable()
+            .Include(x => x.Categoria)
+            .Include(x => x.Cores)
+            .Include(x => x.Tamanhos)
             .FilterAll(paginacaoProduto)
+            .ToListAsync();
+    }
+
+    public async Task<List<Produto>?> GetProdutosByCategoriaAsync(Guid categoriaId)
+    {
+        return await _context
+            .Produtos
+            .AsQueryable()
+            .Include(x => x.Categoria)
+            .Include(x => x.Cores)
+            .Include(x => x.Tamanhos)
+            .Where(x => x.CategoriaId == categoriaId)
             .ToListAsync();
     }
 }

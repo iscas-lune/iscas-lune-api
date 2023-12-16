@@ -62,4 +62,19 @@ public class ProdutoController
             return HandleError(ex.Message);
         }
     }
+
+    [HttpGet("list-by-categorias")]
+    [EnableCors("iscasluneorigin")]
+    public async Task<IActionResult> ListProdutosByCategorias([FromQuery] Guid categoriaId)
+    {
+        try
+        {
+            var result = await _produtoService.GetProdutosByCategoriaAsync(categoriaId);
+            return HandleGet(result);
+        }
+        catch (Exception ex)
+        {
+            return HandleError(ex.Message);
+        }
+    }
 }
