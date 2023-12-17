@@ -23,5 +23,8 @@ public static class DependencyInjectApplication
         services.AddScoped<IProdutoService, ProdutoService>();
         services.AddScoped<ICorProdutoService, CorProdutoService>();
         services.AddScoped<ITamanhoProdutoService, TamanhoProdutoService>();
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IUsuarioService, UsuarioService>();
+        services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
     }
 }

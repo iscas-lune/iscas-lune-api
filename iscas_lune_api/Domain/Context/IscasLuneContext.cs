@@ -1,4 +1,6 @@
-﻿using iscaslune.Api.Domain.Entities;
+﻿using iscas_lune_api.Domain.Entities;
+using iscas_lune_api.Domain.EntityConfiguration;
+using iscaslune.Api.Domain.Entities;
 using iscaslune.Api.Domain.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +19,7 @@ public class IscasLuneContext : DbContext
     public DbSet<Produto> Produtos { get; set; }
     public DbSet<CoresProdutos> CoresProdutos { get; set; }
     public DbSet<TamanhosProdutos> TamanhosProdutos { get; set; }
+    public DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,5 +30,6 @@ public class IscasLuneContext : DbContext
         modelBuilder.ApplyConfiguration(new ProdutoConfiguration());
         modelBuilder.ApplyConfiguration(new TamanhoConfiguration());
         modelBuilder.ApplyConfiguration(new TamanhosProdutosConfiguration());
+        modelBuilder.ApplyConfiguration(new UsuarioConfiguration());
     }
 }

@@ -1,4 +1,6 @@
 using dotenv.net;
+using iscas_lune_api.CrossCutting;
+using iscaslune.Api;
 using iscaslune.Api.CrossCutting;
 
 internal class Program
@@ -16,20 +18,23 @@ internal class Program
         builder.Services.InjectDomain();
         builder.Services.InjectInfrastructure();
         builder.Services.InjectApplication();
+        builder.Services.InjectJwt();
         builder.Services.InjectCors();
 
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        //if (app.Environment.IsDevelopment())
-        //{
+        if (EnvironmentVariable.GetVariable("AMBIENTE").Equals("develop"))
+        {
             app.UseSwagger();
             app.UseSwaggerUI();
-        //}
+        }
 
         app.UseCors();
 
         app.UseHttpsRedirection();
+
+        app.UseAuthentication();
 
         app.UseAuthorization();
 
