@@ -1,4 +1,5 @@
 ﻿using iscas_lune_api.Application.Interfaces;
+using iscas_lune_api.Dtos.Usuarios;
 using iscaslune.Api.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -26,6 +27,24 @@ public class UsuarioController : ControllerBaseIscasLune
         {
             var usuario = _usuarioService.GetConta();
             return HandleGet(usuario);
+        }
+        catch (Exception ex)
+        {
+            return HandleError(ex.Message);
+        }
+    }
+
+    [EnableCors("iscasluneoriginwithpost")]
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateUsuario(CreateUsuarioDto createUsuarioDto)
+    {
+        try
+        {
+            var result = await _usuarioService.CreateUsuarioAsync(createUsuarioDto);
+            if(!string.IsNullOrWhiteSpace(result?.Error))
+                return BadRequest(new { message = result?.Error });
+
+            return Ok(result);
         }
         catch (Exception ex)
         {

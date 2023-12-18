@@ -24,6 +24,9 @@ public static class DependencyInjectInfrastructure
         services.AddScoped<ProdutoRepository>();
         services.AddScoped<IProdutoRepository, ProdutoCached>();
 
+        services.AddScoped<UsuarioRepository>();
+        services.AddScoped<IUsuarioRepository, UsuarioCached>();
+
         services.AddScoped<BannerRepository>();
         services.AddScoped<IBannerRepository, BannerCached>();
         services.AddScoped<ICorProdutoRepository, CorProdutoRepository>();

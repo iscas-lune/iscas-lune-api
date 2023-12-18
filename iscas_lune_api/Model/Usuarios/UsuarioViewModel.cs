@@ -1,7 +1,7 @@
 ﻿using iscas_lune_api.Domain.Entities;
 using iscaslune.Api.Model.Base;
 
-namespace iscas_lune_api.Model;
+namespace iscas_lune_api.Model.Usuarios;
 
 public class UsuarioViewModel : BaseModel<Usuario, UsuarioViewModel>
 {
@@ -11,7 +11,7 @@ public class UsuarioViewModel : BaseModel<Usuario, UsuarioViewModel>
 
     public override UsuarioViewModel? ForModel(Usuario? entity)
     {
-        if(entity == null) return null;
+        if (entity == null) return null;
 
         Id = entity.Id;
         DataCriacao = entity.DataCriacao;

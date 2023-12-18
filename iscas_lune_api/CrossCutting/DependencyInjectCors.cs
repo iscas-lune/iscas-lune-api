@@ -14,6 +14,13 @@ public static class DependencyInjectCors
                                       .WithMethods("GET")
                                       .AllowAnyHeader();
                               });
+            options.AddPolicy(name: "iscasluneoriginwithpost",
+                              policy =>
+                              {
+                                  policy.WithOrigins(origin)
+                                      .WithMethods("POST")
+                                      .AllowAnyHeader();
+                              });
         });
     }
 }

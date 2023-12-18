@@ -1,6 +1,6 @@
 ﻿using iscas_lune_api.Application.Interfaces;
 using iscas_lune_api.Domain.Entities;
-using iscas_lune_api.Model;
+using iscas_lune_api.Model.Usuarios;
 using iscaslune.Api;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

@@ -1,5 +1,5 @@
 ﻿using iscas_lune_api.Domain.Entities;
-using iscas_lune_api.Model;
+using iscas_lune_api.Model.Usuarios;
 
 namespace iscas_lune_api.Application.Interfaces;
 
