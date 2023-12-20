@@ -14,13 +14,13 @@ public class PedidoRepository : GenericRepository<Pedido>, IPedidoRepository
         _context = context;
     }
 
-    public async Task<List<Pedido>?> GetPedidosByUsuarioIdAsync(Guid usuarioId)
+    public async Task<List<Pedido>?> GetPedidosByUsuarioIdAsync(Guid usuarioId, int statusPedido)
     {
         return await _context.Pedidos
             .AsQueryable()
             .Include(x => x.ItensPedido)
                 .ThenInclude(x => x.Produto)
-            .Where(x => x.UsuarioId == usuarioId)
+            .Where(x => x.UsuarioId == usuarioId && x.StatusPedido == (StatusPedido)statusPedido)
             .ToListAsync();
     }
 }

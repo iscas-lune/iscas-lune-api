@@ -38,11 +38,11 @@ public class PedidoController : ControllerBaseIscasLune
 
     [EnableCors("iscasluneorigin")]
     [HttpGet("list")]
-    public async Task<IActionResult> GetPedidos()
+    public async Task<IActionResult> GetPedidos([FromQuery] int statusPedido)
     {
         try
         {
-            var pedidos = await _pedidoService.GetPedidosUsuario();
+            var pedidos = await _pedidoService.GetPedidosUsuario(statusPedido);
             return Ok(pedidos);
         }
         catch (Exception ex)

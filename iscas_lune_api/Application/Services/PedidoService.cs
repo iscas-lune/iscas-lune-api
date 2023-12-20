@@ -44,13 +44,14 @@ public class PedidoService : IPedidoService
 
         if (!result) return ("Ocorreu um erro interno, tente novamente mais tarde!", false);
         await _cachedService.RemoveCachedAsync($"carrinho-{claims.Id}");
+        await _cachedService.RemoveCachedAsync($"pedidos-{claims.Id}-0");
         return (null, true);
     }
 
-    public async Task<List<PedidoViewModel>> GetPedidosUsuario()
+    public async Task<List<PedidoViewModel>> GetPedidosUsuario(int statusPedido)
     {
         var claims = _tokenService.GetClaims();
-        var pedidos = await _pedidoRepository.GetPedidosByUsuarioIdAsync(claims.Id);
+        var pedidos = await _pedidoRepository.GetPedidosByUsuarioIdAsync(claims.Id, statusPedido);
 
         return pedidos?.Select(x => new PedidoViewModel().ForModel(x) ?? new()).ToList() ?? new();
     }

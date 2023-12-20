@@ -5,5 +5,5 @@ namespace iscas_lune_api.Infrastructure.Interfaces;
 
 public interface IPedidoRepository : IGenericRepository<Pedido>
 {
-    Task<List<Pedido>?> GetPedidosByUsuarioIdAsync(Guid usuarioId);
+    Task<List<Pedido>?> GetPedidosByUsuarioIdAsync(Guid usuarioId, int statusPedido);
 }
