@@ -16,7 +16,7 @@ public class CorProdutoService : ICorProdutoService
 
     public async Task<bool> CreateCorProdutoAsync(CreateCorProdutoDto createCorProdutoDto)
     {
-        var corProduto = new CoresProdutos(Guid.NewGuid(), createCorProdutoDto.ProdutoId, createCorProdutoDto.CorId);
+        var corProduto = new PesosProdutos(Guid.NewGuid(), createCorProdutoDto.ProdutoId, createCorProdutoDto.CorId);
         return await _corProdutoRepository.AddAsync(corProduto);
     }
 }

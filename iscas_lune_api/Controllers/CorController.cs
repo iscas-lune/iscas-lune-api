@@ -16,7 +16,7 @@ public class CorController : ControllerBaseIscasLune
     }
 
     [HttpPost("create")]
-    public async Task<IActionResult> CreateCor(CreateCorDto createCorDto)
+    public async Task<IActionResult> CreateCor(CreatePesoDto createCorDto)
     {
         try
         {
@@ -44,7 +44,7 @@ public class CorController : ControllerBaseIscasLune
     }
     [EnableCors("iscasluneorigin")]
     [HttpGet("list")]
-    public async Task<IActionResult> ListCores([FromQuery] PaginacaoCorDto paginacaoCorDto)
+    public async Task<IActionResult> ListCores([FromQuery] PaginacaoPesoDto paginacaoCorDto)
     {
         try
         {

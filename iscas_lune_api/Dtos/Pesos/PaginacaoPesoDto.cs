@@ -2,7 +2,7 @@
 
 namespace iscaslune.Api.Dtos.Cores;
 
-public class PaginacaoCorDto : FilterModel
+public class PaginacaoPesoDto : FilterModel
 {
     public string? Descricao { get; set; }
 }

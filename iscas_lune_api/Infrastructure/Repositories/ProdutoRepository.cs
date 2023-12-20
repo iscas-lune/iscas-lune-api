@@ -22,8 +22,10 @@ public class ProdutoRepository
         return await _context
             .Produtos
             .Include(x => x.Categoria)
-            .Include(x => x.Cores)
+            .Include(x => x.Pesos)
+                .ThenInclude(x => x.PrecoProdutoPeso)
             .Include(x => x.Tamanhos)
+                .ThenInclude(x => x.PrecoProduto)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
@@ -33,8 +35,10 @@ public class ProdutoRepository
             .Produtos
             .AsQueryable()
             .Include(x => x.Categoria)
-            .Include(x => x.Cores)
+            .Include(x => x.Pesos)
+                .ThenInclude(x => x.PrecoProdutoPeso)
             .Include(x => x.Tamanhos)
+                .ThenInclude(x => x.PrecoProduto)
             .FilterAll(paginacaoProduto)
             .ToListAsync();
     }
@@ -45,20 +49,26 @@ public class ProdutoRepository
             .Produtos
             .AsQueryable()
             .Include(x => x.Categoria)
-            .Include(x => x.Cores)
+            .Include(x => x.Pesos)
+                .ThenInclude(x => x.PrecoProdutoPeso)
             .Include(x => x.Tamanhos)
+                .ThenInclude(x => x.PrecoProduto)
             .Where(x => produtosIds.Contains(x.Id))
             .ToListAsync();
 
         produtos.ForEach(produto =>
         {
             produto.Categoria.Produtos = new();
-            produto.Cores.ForEach(cor =>
+            produto.Pesos.ForEach(peso =>
             {
-                cor.Produtos = new();
+                if (peso.PrecoProdutoPeso != null)
+                    peso.PrecoProdutoPeso.Peso = null;
+                peso.Produtos = new();
             });
             produto.Tamanhos.ForEach(tamanho =>
             {
+                if(tamanho.PrecoProduto != null)
+                    tamanho.PrecoProduto.Tamanho = null;
                 tamanho.Produtos = new();
             });
         });
@@ -72,8 +82,10 @@ public class ProdutoRepository
             .Produtos
             .AsQueryable()
             .Include(x => x.Categoria)
-            .Include(x => x.Cores)
+            .Include(x => x.Pesos)
+                .ThenInclude(x => x.PrecoProdutoPeso)
             .Include(x => x.Tamanhos)
+                .ThenInclude(x => x.PrecoProduto)
             .Where(x => x.CategoriaId == categoriaId)
             .ToListAsync();
     }

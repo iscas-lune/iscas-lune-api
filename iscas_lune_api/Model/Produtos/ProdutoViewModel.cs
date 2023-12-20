@@ -1,4 +1,5 @@
-﻿using iscaslune.Api.Domain.Entities;
+﻿using iscas_lune_api.Model.PrecosProdutos;
+using iscaslune.Api.Domain.Entities;
 using iscaslune.Api.Model.Base;
 using iscaslune.Api.Model.Categorias;
 using iscaslune.Api.Model.Cores;
@@ -16,7 +17,7 @@ public class ProdutoViewModel : BaseModel<Produto, ProdutoViewModel>
     public string Foto { get; set; } = string.Empty;
     public List<TamanhoViewModel>? Tamanhos { get; set; } = new();
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public List<CorViewModel>? Cores { get; set; } = new();
+    public List<PesoViewModel>? Pesos { get; set; } = new();
     public Guid CategoriaId { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public CategoriaViewModel? Categoria { get; set; } = null!;
@@ -33,11 +34,10 @@ public class ProdutoViewModel : BaseModel<Produto, ProdutoViewModel>
         EspecificacaoTecnica = entity.EspecificacaoTecnica;
         Foto = Encoding.UTF8.GetString(entity.Foto);
         Tamanhos = entity.Tamanhos.Select(x => new TamanhoViewModel().ForModel(x) ?? new()).ToList();
-        Cores = entity.Cores.Select(x => new CorViewModel().ForModel(x) ?? new()).ToList();
+        Pesos = entity.Pesos.Select(x => new PesoViewModel().ForModel(x) ?? new()).ToList();
         Categoria = new CategoriaViewModel().ForModel(entity.Categoria);
         CategoriaId = entity.CategoriaId;
         Referencia = entity.Referencia;
-
         return this;
     }
 }

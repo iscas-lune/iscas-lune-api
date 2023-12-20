@@ -31,9 +31,9 @@ public class ProdutoConfiguration : IEntityTypeConfiguration<Produto>
         builder.Property(x => x.Referencia)
             .HasMaxLength(255)
             .HasDefaultValue(null);
-        builder.HasMany(x => x.Cores)
+        builder.HasMany(x => x.Pesos)
             .WithMany(x => x.Produtos)
-            .UsingEntity<CoresProdutos>();
+            .UsingEntity<PesosProdutos>();
         builder.HasMany(x => x.Tamanhos)
             .WithMany(x => x.Produtos)
             .UsingEntity<TamanhosProdutos>();

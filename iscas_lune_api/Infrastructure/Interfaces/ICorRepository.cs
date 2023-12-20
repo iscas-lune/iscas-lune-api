@@ -3,8 +3,8 @@ using iscaslune.Api.Dtos.Cores;
 
 namespace iscaslune.Api.Infrastructure.Interfaces;
 
-public interface ICorRepository : IGenericRepository<Cor>
+public interface ICorRepository : IGenericRepository<Peso>
 {
-    Task<Cor?> GetCorByIdAsync(Guid id);
-    Task<List<Cor>> GetCoresAsync(PaginacaoCorDto filterModel);
+    Task<Peso?> GetCorByIdAsync(Guid id);
+    Task<List<Peso>> GetCoresAsync(PaginacaoPesoDto filterModel);
 }

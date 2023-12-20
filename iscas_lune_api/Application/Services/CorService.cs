@@ -15,25 +15,25 @@ public class CorService
         _corRepository = corRepository;
     }
 
-    public async Task<CorViewModel?> CreateCorAsync(CreateCorDto createCorDto)
+    public async Task<PesoViewModel?> CreateCorAsync(CreatePesoDto createCorDto)
     {
         var cor = createCorDto.ForEntity();
         var result = await _corRepository.AddAsync(cor);
 
         if(!result) return null;
 
-        return new CorViewModel().ForModel(cor);
+        return new PesoViewModel().ForModel(cor);
     }
 
-    public async Task<CorViewModel?> GetCorByIdAsync(Guid id)
+    public async Task<PesoViewModel?> GetCorByIdAsync(Guid id)
     {
         var cor = await _corRepository.GetCorByIdAsync(id);
-        return new CorViewModel().ForModel(cor);
+        return new PesoViewModel().ForModel(cor);
     }
 
-    public async Task<List<CorViewModel>?> GetCoresAsync(PaginacaoCorDto paginacaoCorDto)
+    public async Task<List<PesoViewModel>?> GetCoresAsync(PaginacaoPesoDto paginacaoCorDto)
     {
         var cores = await _corRepository.GetCoresAsync(paginacaoCorDto);
-        return cores?.Select(x => new CorViewModel().ForModel(x) ?? new()).ToList();
+        return cores?.Select(x => new PesoViewModel().ForModel(x) ?? new()).ToList();
     }
 }

@@ -5,7 +5,7 @@ using iscaslune.Api.Infrastructure.Repositories;
 
 namespace iscas_lune_api.Infrastructure.Cached;
 
-public class CorProdutoRepository : GenericRepository<CoresProdutos>, ICorProdutoRepository
+public class CorProdutoRepository : GenericRepository<PesosProdutos>, ICorProdutoRepository
 {
     public CorProdutoRepository(IscasLuneContext context) : base(context)
     {

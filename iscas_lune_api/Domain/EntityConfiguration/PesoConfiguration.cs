@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace iscaslune.Api.Domain.EntityConfiguration;
 
-public class CorConfiguration : IEntityTypeConfiguration<Cor>
+public class PesoConfiguration : IEntityTypeConfiguration<Peso>
 {
-    public void Configure(EntityTypeBuilder<Cor> builder)
+    public void Configure(EntityTypeBuilder<Peso> builder)
     {
         builder.HasKey(x => x.Id);
         builder.Property(x => x.DataCriacao)

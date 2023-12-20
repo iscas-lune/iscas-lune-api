@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace iscaslune.Api.Dtos.Cores;
 
-public class CreateCorDto : BaseDto<Cor>
+public class CreatePesoDto : BaseDto<Peso>
 {
     [Required]
     [MaxLength(255)]
     public string Descricao { get; set; } = string.Empty;
 
-    public override Cor ForEntity()
+    public override Peso ForEntity()
     {
         var date = DateTime.Now;
         return new(Guid.NewGuid(), date, date, 0, Descricao);

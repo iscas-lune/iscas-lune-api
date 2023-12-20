@@ -31,14 +31,20 @@ public class ProdutoCached
             if(produto != null)
             {
                 produto.Categoria.Produtos = new();
-                produto.Cores.ForEach(cor =>
+                produto.Pesos.ForEach(peso =>
                 {
-                    cor.Produtos = new();
+                    if (peso.PrecoProdutoPeso != null)
+                        peso.PrecoProdutoPeso.Peso = null;
+                    peso.Produtos = new();
+                    peso.Produtos = new();
                 });
                 produto.Tamanhos.ForEach(tamanho =>
                 {
+                    if (tamanho.PrecoProduto != null)
+                        tamanho.PrecoProduto.Tamanho = null;
                     tamanho.Produtos = new();
                 });
+                
                 await _cachedService.SetItemAsync(key, produto);
             }
         }
@@ -60,18 +66,22 @@ public class ProdutoCached
 
             if(produtos != null && produtos.Count > 0)
             {
-                produtos.ForEach(produto =>
+                produtos.ForEach((Action<Produto>)(produto =>
                 {
                     produto.Categoria.Produtos = new();
-                    produto.Cores.ForEach(cor =>
+                    produto.Pesos.ForEach(peso =>
                     {
-                        cor.Produtos = new();
+                        if (peso.PrecoProdutoPeso != null)
+                            peso.PrecoProdutoPeso.Peso = null;
+                        peso.Produtos = new();
                     });
                     produto.Tamanhos.ForEach(tamanho =>
                     {
+                        if (tamanho.PrecoProduto != null)
+                            tamanho.PrecoProduto.Tamanho = null;
                         tamanho.Produtos = new();
                     });
-                });
+                }));
 
                 await _cachedService.SetListItemAsync(_keyList, produtos);
             }
@@ -90,18 +100,22 @@ public class ProdutoCached
             produtos = await _produtoRepository.GetProdutosByCategoriaAsync(categoriaId);
             if(produtos?.Count > 0)
             {
-                produtos.ForEach(produto =>
+                produtos.ForEach((Action<Produto>)(produto =>
                 {
                     produto.Categoria.Produtos = new();
-                    produto.Cores.ForEach(cor =>
+                    produto.Pesos.ForEach(peso =>
                     {
-                        cor.Produtos = new();
+                        if (peso.PrecoProdutoPeso != null)
+                            peso.PrecoProdutoPeso.Peso = null;
+                        peso.Produtos = new();
                     });
                     produto.Tamanhos.ForEach(tamanho =>
                     {
+                        if (tamanho.PrecoProduto != null)
+                            tamanho.PrecoProduto.Tamanho = null;
                         tamanho.Produtos = new();
                     });
-                });
+                }));
 
                 await _cachedService.SetListItemAsync(_keyList + categoriaId, produtos);
             }

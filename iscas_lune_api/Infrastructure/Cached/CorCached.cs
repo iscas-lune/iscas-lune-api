@@ -9,19 +9,19 @@ using iscaslune.Api.Infrastructure.Repositories;
 namespace iscaslune.Api.Infrastructure.Cached;
 
 public class CorCached
-    : GenericRepository<Cor>, ICorRepository
+    : GenericRepository<Peso>, ICorRepository
 {
-    private readonly ICachedService<Cor> _cachedService;
+    private readonly ICachedService<Peso> _cachedService;
     private readonly CorRepository _corRepository;
     private const string _keyList = "cores";
 
-    public CorCached(IscasLuneContext context, ICachedService<Cor> cachedService, CorRepository corRepository) : base(context)
+    public CorCached(IscasLuneContext context, ICachedService<Peso> cachedService, CorRepository corRepository) : base(context)
     {
         _cachedService = cachedService;
         _corRepository = corRepository;
     }
 
-    public async Task<Cor?> GetCorByIdAsync(Guid id)
+    public async Task<Peso?> GetCorByIdAsync(Guid id)
     {
         var key = id.ToString();
         var cor = await _cachedService.GetItemAsync(key);
@@ -35,7 +35,7 @@ public class CorCached
         return cor;
     }
 
-    public async Task<List<Cor>> GetCoresAsync(PaginacaoCorDto filterModel)
+    public async Task<List<Peso>> GetCoresAsync(PaginacaoPesoDto filterModel)
     {
         if(!string.IsNullOrWhiteSpace(filterModel.Descricao) 
             || !filterModel.OrderBy.Equals("DataCriacao") 

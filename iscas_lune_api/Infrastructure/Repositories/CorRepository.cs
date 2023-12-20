@@ -7,24 +7,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace iscaslune.Api.Infrastructure.Repositories;
 
-public class CorRepository : GenericRepository<Cor>, ICorRepository
+public class CorRepository : GenericRepository<Peso>, ICorRepository
 {
     private readonly IscasLuneContext _context;
     public CorRepository(IscasLuneContext context) : base(context)
     {
         _context = context;
     }
-    public async Task<Cor?> GetCorByIdAsync(Guid id)
+    public async Task<Peso?> GetCorByIdAsync(Guid id)
     {
         return await _context
-            .Cores
+            .Pesos
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<List<Cor>> GetCoresAsync(PaginacaoCorDto filterModel)
+    public async Task<List<Peso>> GetCoresAsync(PaginacaoPesoDto filterModel)
     {
         return await _context
-            .Cores
+            .Pesos
             .AsQueryable()
             .FilterAll(filterModel)
             .ToListAsync();

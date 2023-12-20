@@ -32,5 +32,6 @@ public static class DependencyInjectInfrastructure
         services.AddScoped<ICorProdutoRepository, CorProdutoRepository>();
         services.AddScoped<ITamanhoProdutoRepository, TamanhoProdutoRepository>();
         services.AddScoped<ILoginRepository, LoginRepository>();
+        services.AddScoped<IPedidoRepository, PedidoRepository>();
     }
 }

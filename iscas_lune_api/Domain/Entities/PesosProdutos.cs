@@ -1,17 +1,17 @@
 ﻿namespace iscaslune.Api.Domain.Entities;
 
-public sealed class CoresProdutos
+public sealed class PesosProdutos
 {
-    public CoresProdutos(Guid id, Guid produtoId, Guid corId)
+    public PesosProdutos(Guid id, Guid produtoId, Guid pesoId)
     {
         Id = id;
         ProdutoId = produtoId;
-        CorId = corId;
+        PesoId = pesoId;
     }
 
     public Guid Id { get; private set; }
     public Guid ProdutoId { get; private set; }
     public Produto Produto { get; set; } = null!;
-    public Guid CorId { get; private set; }
-    public Cor Cor { get; set; } = null!;
+    public Guid PesoId { get; private set; }
+    public Peso Peso { get; set; } = null!;
 }

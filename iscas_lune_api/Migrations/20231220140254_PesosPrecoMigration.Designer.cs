@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using iscaslune.Api.Domain.Context;
@@ -11,9 +12,11 @@ using iscaslune.Api.Domain.Context;
 namespace iscaslune.Api.Migrations
 {
     [DbContext(typeof(IscasLuneContext))]
-    partial class IscasLuneContextModelSnapshot : ModelSnapshot
+    [Migration("20231220140254_PesosPrecoMigration")]
+    partial class PesosPrecoMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,96 +24,6 @@ namespace iscaslune.Api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("iscas_lune_api.Domain.Entities.ItensPedido", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("DataAtualizacao")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<DateTime>("DataCriacao")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<long>("Numero")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Numero"));
-
-                    b.Property<Guid>("PedidoId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PesoId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ProdutoId")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Quantidade")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("numeric(12,2)");
-
-                    b.Property<Guid?>("TamanhoId")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("ValorUnitario")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("numeric(12,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PedidoId");
-
-                    b.HasIndex("PesoId");
-
-                    b.HasIndex("ProdutoId");
-
-                    b.HasIndex("TamanhoId");
-
-                    b.ToTable("ItensPedidos");
-                });
-
-            modelBuilder.Entity("iscas_lune_api.Domain.Entities.Pedido", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("DataAtualizacao")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<DateTime>("DataCriacao")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<long>("Numero")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Numero"));
-
-                    b.Property<int>("StatusPedido")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("Pedidos");
-                });
 
             modelBuilder.Entity("iscas_lune_api.Domain.Entities.PrecoProduto", b =>
                 {
@@ -482,48 +395,6 @@ namespace iscaslune.Api.Migrations
                     b.ToTable("TamanhosProdutos");
                 });
 
-            modelBuilder.Entity("iscas_lune_api.Domain.Entities.ItensPedido", b =>
-                {
-                    b.HasOne("iscas_lune_api.Domain.Entities.Pedido", "Pedido")
-                        .WithMany("ItensPedido")
-                        .HasForeignKey("PedidoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("iscaslune.Api.Domain.Entities.Peso", "Peso")
-                        .WithMany("ItensPedido")
-                        .HasForeignKey("PesoId");
-
-                    b.HasOne("iscaslune.Api.Domain.Entities.Produto", "Produto")
-                        .WithMany("ItensPedido")
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("iscaslune.Api.Domain.Entities.Tamanho", "Tamanho")
-                        .WithMany("ItensPedido")
-                        .HasForeignKey("TamanhoId");
-
-                    b.Navigation("Pedido");
-
-                    b.Navigation("Peso");
-
-                    b.Navigation("Produto");
-
-                    b.Navigation("Tamanho");
-                });
-
-            modelBuilder.Entity("iscas_lune_api.Domain.Entities.Pedido", b =>
-                {
-                    b.HasOne("iscas_lune_api.Domain.Entities.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
-                });
-
             modelBuilder.Entity("iscas_lune_api.Domain.Entities.PrecoProduto", b =>
                 {
                     b.HasOne("iscaslune.Api.Domain.Entities.Tamanho", "Tamanho")
@@ -595,11 +466,6 @@ namespace iscaslune.Api.Migrations
                     b.Navigation("Tamanho");
                 });
 
-            modelBuilder.Entity("iscas_lune_api.Domain.Entities.Pedido", b =>
-                {
-                    b.Navigation("ItensPedido");
-                });
-
             modelBuilder.Entity("iscaslune.Api.Domain.Entities.Categoria", b =>
                 {
                     b.Navigation("Produtos");
@@ -607,21 +473,12 @@ namespace iscaslune.Api.Migrations
 
             modelBuilder.Entity("iscaslune.Api.Domain.Entities.Peso", b =>
                 {
-                    b.Navigation("ItensPedido");
-
                     b.Navigation("PrecoProdutoPeso")
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("iscaslune.Api.Domain.Entities.Produto", b =>
-                {
-                    b.Navigation("ItensPedido");
-                });
-
             modelBuilder.Entity("iscaslune.Api.Domain.Entities.Tamanho", b =>
                 {
-                    b.Navigation("ItensPedido");
-
                     b.Navigation("PrecoProduto")
                         .IsRequired();
                 });

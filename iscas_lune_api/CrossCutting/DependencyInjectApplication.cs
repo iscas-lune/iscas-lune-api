@@ -30,5 +30,6 @@ public static class DependencyInjectApplication
         services.AddTransient<IEmailService, EmailService>();
         services.AddTransient<IEsqueceSenhaService, EsqueceSenhaService>();
         services.AddTransient<ICarrinhoService, CarrinhoService>();
+        services.AddTransient<IPedidoService, PedidoService>();
     }
 }
