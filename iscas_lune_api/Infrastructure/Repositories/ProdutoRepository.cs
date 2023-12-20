@@ -39,6 +39,33 @@ public class ProdutoRepository
             .ToListAsync();
     }
 
+    public async Task<List<Produto>> GetProdutosByCarrinhoAsync(List<Guid> produtosIds)
+    {
+        var produtos = await _context
+            .Produtos
+            .AsQueryable()
+            .Include(x => x.Categoria)
+            .Include(x => x.Cores)
+            .Include(x => x.Tamanhos)
+            .Where(x => produtosIds.Contains(x.Id))
+            .ToListAsync();
+
+        produtos.ForEach(produto =>
+        {
+            produto.Categoria.Produtos = new();
+            produto.Cores.ForEach(cor =>
+            {
+                cor.Produtos = new();
+            });
+            produto.Tamanhos.ForEach(tamanho =>
+            {
+                tamanho.Produtos = new();
+            });
+        });
+
+        return produtos;
+    }
+
     public async Task<List<Produto>?> GetProdutosByCategoriaAsync(Guid categoriaId)
     {
         return await _context

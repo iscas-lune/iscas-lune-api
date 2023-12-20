@@ -109,4 +109,7 @@ public class ProdutoCached
 
         return produtos;
     }
+
+    public async Task<List<Produto>> GetProdutosByCarrinhoAsync(List<Guid> produtosIds)
+        => await _produtoRepository.GetProdutosByCarrinhoAsync(produtosIds);
 }

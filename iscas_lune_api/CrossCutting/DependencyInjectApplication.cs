@@ -26,5 +26,9 @@ public static class DependencyInjectApplication
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUsuarioService, UsuarioService>();
         services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddTransient<ILoginService, LoginService>();
+        services.AddTransient<IEmailService, EmailService>();
+        services.AddTransient<IEsqueceSenhaService, EsqueceSenhaService>();
+        services.AddTransient<ICarrinhoService, CarrinhoService>();
     }
 }

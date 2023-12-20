@@ -18,7 +18,7 @@ public static class DependencyInjectCors
                               policy =>
                               {
                                   policy.WithOrigins(origin)
-                                      .WithMethods("POST")
+                                      .WithMethods("POST", "PUT")
                                       .AllowAnyHeader();
                               });
         });

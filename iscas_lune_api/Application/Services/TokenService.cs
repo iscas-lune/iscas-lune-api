@@ -53,7 +53,7 @@ public class TokenService : ITokenService
         return tokenString;
     }
 
-    public UsuarioViewModel? GetClaims()
+    public UsuarioViewModel GetClaims()
     {
         if (_httpContextAccessor?.HttpContext?.User.Identity is not ClaimsIdentity claimsIdentity || !claimsIdentity.Claims.Any())
             throw new ArgumentNullException(nameof(claimsIdentity));

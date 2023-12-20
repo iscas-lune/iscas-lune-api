@@ -31,5 +31,6 @@ public static class DependencyInjectInfrastructure
         services.AddScoped<IBannerRepository, BannerCached>();
         services.AddScoped<ICorProdutoRepository, CorProdutoRepository>();
         services.AddScoped<ITamanhoProdutoRepository, TamanhoProdutoRepository>();
+        services.AddScoped<ILoginRepository, LoginRepository>();
     }
 }
