@@ -20,6 +20,7 @@ public class TamanhoRepository
     public async Task<Tamanho?> GetTamanhoByIdAsync(Guid id)
     {
         return await _context.Tamanhos
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);  
     }
 
@@ -29,6 +30,7 @@ public class TamanhoRepository
             .Tamanhos
             .AsQueryable()
             .FilterAll(paginacaoTamanhoDto)
+            .AsNoTracking()
             .ToListAsync();
     }
 }

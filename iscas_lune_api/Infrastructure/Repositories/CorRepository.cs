@@ -18,6 +18,7 @@ public class CorRepository : GenericRepository<Peso>, ICorRepository
     {
         return await _context
             .Pesos
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
@@ -25,6 +26,7 @@ public class CorRepository : GenericRepository<Peso>, ICorRepository
     {
         return await _context
             .Pesos
+            .AsNoTracking()
             .AsQueryable()
             .FilterAll(filterModel)
             .ToListAsync();

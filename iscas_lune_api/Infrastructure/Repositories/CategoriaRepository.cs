@@ -19,7 +19,9 @@ public class CategoriaRepository
 
     public async Task<Categoria?> GetCategoriaByIdAsync(Guid id)
     {
-        return await _context.Categorias
+        return await _context
+            .Categorias
+            .AsNoTracking()
             .Include(x => x.Produtos)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
@@ -29,6 +31,7 @@ public class CategoriaRepository
         var categorias = await _context
             .Categorias
             .AsQueryable()
+            .AsNoTracking()
             .Include(x => x.Produtos)
             .FilterAll(paginacaoCategoriaDto)
             .ToListAsync();

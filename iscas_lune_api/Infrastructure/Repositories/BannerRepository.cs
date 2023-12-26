@@ -17,6 +17,6 @@ public class BannerRepository
 
     public async Task<List<Banner>> GetBannerAsync()
     {
-        return await _context.Banners.Where(x => x.Ativo).ToListAsync();
+        return await _context.Banners.AsNoTracking().Where(x => x.Ativo).ToListAsync();
     }
 }

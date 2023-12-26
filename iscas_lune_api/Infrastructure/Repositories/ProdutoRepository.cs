@@ -26,6 +26,7 @@ public class ProdutoRepository
                 .ThenInclude(x => x.PrecoProdutoPeso)
             .Include(x => x.Tamanhos)
                 .ThenInclude(x => x.PrecoProduto)
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
@@ -40,6 +41,7 @@ public class ProdutoRepository
             .Include(x => x.Tamanhos)
                 .ThenInclude(x => x.PrecoProduto)
             .FilterAll(paginacaoProduto)
+            .AsNoTracking()
             .ToListAsync();
     }
 
@@ -54,6 +56,7 @@ public class ProdutoRepository
             .Include(x => x.Tamanhos)
                 .ThenInclude(x => x.PrecoProduto)
             .Where(x => produtosIds.Contains(x.Id))
+            .AsNoTracking()
             .ToListAsync();
 
         produtos.ForEach(produto =>
@@ -87,6 +90,7 @@ public class ProdutoRepository
             .Include(x => x.Tamanhos)
                 .ThenInclude(x => x.PrecoProduto)
             .Where(x => x.CategoriaId == categoriaId)
+            .AsNoTracking()
             .ToListAsync();
     }
 }

@@ -25,6 +25,7 @@ public class PedidoRepository : GenericRepository<Pedido>, IPedidoRepository
                 .ThenInclude(x => x.Tamanho)
             .Include(x => x.ItensPedido)
                 .ThenInclude(x => x.Peso)
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
@@ -39,6 +40,7 @@ public class PedidoRepository : GenericRepository<Pedido>, IPedidoRepository
             .Include(x => x.ItensPedido)
                 .ThenInclude(x => x.Peso)
             .Where(x => x.UsuarioId == usuarioId && x.StatusPedido == (StatusPedido)statusPedido)
+            .AsNoTracking()
             .ToListAsync();
     }
 }

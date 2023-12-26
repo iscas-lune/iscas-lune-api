@@ -6,17 +6,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace iscas_lune_api.Infrastructure.Repositories;
 
-public class PedidosEmAbertoRepository 
-    : GenericRepository<PedidosEmAberto>, IPedidosEmAbertoRepository
+public class PedidosEmAbertoRepository : IPedidosEmAbertoRepository
 {
     private readonly IscasLuneContext _context;
-    public PedidosEmAbertoRepository(IscasLuneContext context) : base(context)
+    public PedidosEmAbertoRepository(IscasLuneContext context)
     {
         _context = context;
     }
 
+    public async Task AddAsync(PedidosEmAberto pedidosEmAberto)
+    {
+        await _context.AddAsync(pedidosEmAberto);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(PedidosEmAberto pedidosEmAberto)
+    {
+        _context.Remove(pedidosEmAberto);
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<PedidosEmAberto?> GetFirstOrDefautlAsync()
     {
-        return await _context.PedidosEmAberto.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+        return await _context
+            .PedidosEmAberto
+            .OrderByDescending(x => x.Id)
+            .FirstOrDefaultAsync();
     }
 }

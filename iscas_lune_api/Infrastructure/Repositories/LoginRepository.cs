@@ -16,6 +16,6 @@ public class LoginRepository : ILoginRepository
 
     public async Task<Usuario?> LoginAsync(string email)
     {
-        return await _context.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+        return await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == email);
     }
 }
