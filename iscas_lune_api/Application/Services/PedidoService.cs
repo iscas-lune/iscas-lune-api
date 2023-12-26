@@ -11,14 +11,16 @@ namespace iscas_lune_api.Application.Services;
 public class PedidoService : IPedidoService
 {
     private readonly IPedidoRepository _pedidoRepository;
+    private readonly IPedidosEmAbertoRepository _pedidosEmAbertoRepository;
     private readonly ITokenService _tokenService;
     private readonly ICachedService<CarrinhoModel> _cachedService;
 
-    public PedidoService(IPedidoRepository pedidoRepository, ITokenService tokenService, ICachedService<CarrinhoModel> cachedService)
+    public PedidoService(IPedidoRepository pedidoRepository, ITokenService tokenService, ICachedService<CarrinhoModel> cachedService, IPedidosEmAbertoRepository pedidosEmAbertoRepository)
     {
         _pedidoRepository = pedidoRepository;
         _tokenService = tokenService;
         _cachedService = cachedService;
+        _pedidosEmAbertoRepository = pedidosEmAbertoRepository;
     }
 
     public async Task<(string? error, bool result)> CreatePedidoAsync(PedidoCreateDto pedidoCreateDto)
@@ -45,6 +47,14 @@ public class PedidoService : IPedidoService
         if (!result) return ("Ocorreu um erro interno, tente novamente mais tarde!", false);
         await _cachedService.RemoveCachedAsync($"carrinho-{claims.Id}");
         await _cachedService.RemoveCachedAsync($"pedidos-{claims.Id}-0");
+        var pedidoEmAberto = new PedidosEmAberto() 
+        {
+            Id = Guid.NewGuid(),
+            PedidoId = pedido.Id,
+        };
+
+        await _pedidosEmAbertoRepository.AddAsync(pedidoEmAberto);
+
         return (null, true);
     }
 

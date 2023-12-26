@@ -24,6 +24,7 @@ public class IscasLuneContext : DbContext
     public DbSet<PrecoProdutoPeso> PrecosProdutoPeso { get; set; }
     public DbSet<Pedido> Pedidos { get; set; }
     public DbSet<ItensPedido> ItensPedidos { get; set; }
+    public DbSet<PedidosEmAberto> PedidosEmAberto { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

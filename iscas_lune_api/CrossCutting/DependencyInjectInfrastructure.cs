@@ -35,5 +35,6 @@ public static class DependencyInjectInfrastructure
 
         services.AddScoped<PedidoRepository>();
         services.AddScoped<IPedidoRepository, PedidosCached>();
+        services.AddScoped<IPedidosEmAbertoRepository, PedidosEmAbertoRepository>();
     }
 }

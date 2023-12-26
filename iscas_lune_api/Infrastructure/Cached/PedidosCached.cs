@@ -17,6 +17,40 @@ public class PedidosCached : GenericRepository<Pedido>, IPedidoRepository
         _pedidoRepository = pedidoRepository;
     }
 
+    public async Task<Pedido?> GetPedidoByIdAsync(Guid id)
+    {
+        var key = $"pedido-{id}";
+        var pedido = await _cachedService.GetItemAsync(key);
+
+        if (pedido == null)
+        {
+            pedido = await _pedidoRepository.GetPedidoByIdAsync(id);
+
+            if (pedido != null)
+            {
+                pedido.ItensPedido.ForEach(item =>
+                {
+                    item.Pedido = null;
+                    item.Produto.ItensPedido = new();
+                    if (item.Peso != null)
+                    {
+                        item.Peso.Produtos = null;
+                        item.Peso.ItensPedido = new();
+                    }
+                    if (item.Tamanho != null)
+                    {
+                        item.Tamanho.Produtos = null;
+                        item.Tamanho.ItensPedido = new();
+                    }
+                });
+
+                await _cachedService.SetItemAsync(key, pedido);
+            }
+        }
+
+        return pedido;
+    }
+
     public async Task<List<Pedido>?> GetPedidosByUsuarioIdAsync(Guid usuarioId, int statusPedido)
     {
         var key = $"pedidos-{usuarioId}-{statusPedido}";
@@ -34,6 +68,16 @@ public class PedidosCached : GenericRepository<Pedido>, IPedidoRepository
                     {
                         item.Pedido = null;
                         item.Produto.ItensPedido = new();
+                        if (item.Peso != null)
+                        {
+                            item.Peso.Produtos = null;
+                            item.Peso.ItensPedido = new();
+                        }
+                        if (item.Tamanho != null)
+                        {
+                            item.Tamanho.Produtos = null;
+                            item.Tamanho.ItensPedido = new();
+                        }
                     });
                 });
                 await _cachedService.SetListItemAsync(key, pedidos);

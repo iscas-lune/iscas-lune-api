@@ -2,5 +2,5 @@
 
 public interface IEmailService
 {
-    bool SendEmail(string email, string message);
+    bool SendEmail(string email, string message, string assunto,byte[]? arquivo = null, string? nomeArquivo = null, string? tipoArquivo = null);
 }

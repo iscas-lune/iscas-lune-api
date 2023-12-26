@@ -15,6 +15,10 @@ public class CarrinhoService : ICarrinhoService
     private readonly ITokenService _tokenService;
     private readonly DistributedCacheEntryOptions _options;
     private readonly JsonSerializerOptions _serializerOptions;
+    private static readonly double _absolutExpiration =
+        double.Parse(Environment.GetEnvironmentVariable("EXPIRACAO_ABSOLUTA_CARRINHO") ?? "24");
+    private static readonly double _slidingExpiration =
+        double.Parse(Environment.GetEnvironmentVariable("EXPIRACAO_SLIDING_CARRINHO") ?? "12");
     public CarrinhoService(IDistributedCache distributedCache, ITokenService tokenService, IProdutoRepository produtoRepository)
     {
         _serializerOptions = new()
@@ -23,8 +27,8 @@ public class CarrinhoService : ICarrinhoService
             ReferenceHandler = ReferenceHandler.Preserve
         };
         _options = new DistributedCacheEntryOptions()
-                      .SetAbsoluteExpiration(TimeSpan.FromHours(24))
-                      .SetSlidingExpiration(TimeSpan.FromHours(12));
+                      .SetAbsoluteExpiration(TimeSpan.FromHours(_absolutExpiration))
+                      .SetSlidingExpiration(TimeSpan.FromHours(_slidingExpiration));
 
         _distributedCache = distributedCache;
         _tokenService = tokenService;

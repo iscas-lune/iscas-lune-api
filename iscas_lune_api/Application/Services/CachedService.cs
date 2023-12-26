@@ -11,6 +11,10 @@ public class CachedService<T> : ICachedService<T> where T : class
     private readonly IDistributedCache _distributedCache;
     private readonly DistributedCacheEntryOptions _options;
     private readonly JsonSerializerOptions _serializerOptions;
+    private static readonly double _absolutExpiration =
+        double.Parse(Environment.GetEnvironmentVariable("EXPIRACAO_ABSOLUTA_CARRINHO") ?? "60");
+    private static readonly double _slidingExpiration =
+        double.Parse(Environment.GetEnvironmentVariable("EXPIRACAO_SLIDING_CARRINHO") ?? "30");
     public CachedService(IDistributedCache distributedCache)
     {
         _serializerOptions = new()
@@ -19,8 +23,8 @@ public class CachedService<T> : ICachedService<T> where T : class
             ReferenceHandler = ReferenceHandler.Preserve
         };
         _options = new DistributedCacheEntryOptions()
-                      .SetAbsoluteExpiration(TimeSpan.FromMinutes(60))
-                      .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+                      .SetAbsoluteExpiration(TimeSpan.FromMinutes(_absolutExpiration))
+                      .SetSlidingExpiration(TimeSpan.FromMinutes(_slidingExpiration));
 
         _distributedCache = distributedCache;
     }

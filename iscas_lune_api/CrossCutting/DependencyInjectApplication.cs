@@ -1,5 +1,7 @@
 ﻿using iscas_lune_api.Application.Interfaces;
 using iscas_lune_api.Application.Services;
+using iscas_lune_api.ITextSharp.Classes;
+using iscas_lune_api.ITextSharp.Interfaces;
 using iscaslune.Api.Application.Interfaces;
 using iscaslune.Api.Application.Services;
 
@@ -26,10 +28,11 @@ public static class DependencyInjectApplication
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUsuarioService, UsuarioService>();
         services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
-        services.AddTransient<ILoginService, LoginService>();
-        services.AddTransient<IEmailService, EmailService>();
-        services.AddTransient<IEsqueceSenhaService, EsqueceSenhaService>();
-        services.AddTransient<ICarrinhoService, CarrinhoService>();
-        services.AddTransient<IPedidoService, PedidoService>();
+        services.AddScoped<ILoginService, LoginService>();
+        services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IEsqueceSenhaService, EsqueceSenhaService>();
+        services.AddScoped<ICarrinhoService, CarrinhoService>();
+        services.AddScoped<IPedidoService, PedidoService>();
+        services.AddScoped<IPdfPedido, PdfPedido>();
     }
 }

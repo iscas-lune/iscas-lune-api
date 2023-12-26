@@ -25,6 +25,7 @@ public class EsqueceSenhaService : IEsqueceSenhaService
         var result = await _usuarioRepository.UpdateAsync(usuario);
         if (!result) return false;
         var message = $"Recuperação de senha efetuada com sucesso!\nSua nova senha é {senha} .\n Importante!\nNo Próximo acesso ao nosso site, efetue a troca da senha.\nAtt: Iscas lune.";
-        return _emailService.SendEmail(usuario.Email, message);
+        var assunto = "Recuperação de senha";
+        return _emailService.SendEmail(usuario.Email, message, assunto);
     }
 }

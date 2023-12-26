@@ -1,5 +1,6 @@
 using dotenv.net;
 using iscas_lune_api.CrossCutting;
+using iscas_lune_api.Workers;
 using iscaslune.Api;
 using iscaslune.Api.CrossCutting;
 
@@ -20,6 +21,8 @@ internal class Program
         builder.Services.InjectApplication();
         builder.Services.InjectJwt();
         builder.Services.InjectCors();
+        builder.Services.InjectHttpClient();
+        builder.Services.AddHostedService<PedidosEmAbertoWorker>();
 
         var app = builder.Build();
 

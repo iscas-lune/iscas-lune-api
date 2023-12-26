@@ -22,17 +22,23 @@ public class EmailService : IEmailService
         _port = int.Parse(EnvironmentVariable.GetVariable("EMAIL_PORT"));
     }
 
-    public bool SendEmail(string email, string message)
+    public bool SendEmail(string email, string message,string assunto, byte[]? arquivo = null, string? nomeArquivo = null, string? tipoArquivo = null)
     {
         try
         {
             var mail = new MailMessage(_from, email)
             {
-                Subject = "Recuperação de senha",
+                Subject = assunto,
                 SubjectEncoding = System.Text.Encoding.GetEncoding("UTF-8"),
                 BodyEncoding = System.Text.Encoding.GetEncoding("UTF-8"),
                 Body = message
             };
+
+            if (arquivo != null && !string.IsNullOrWhiteSpace(nomeArquivo) && !string.IsNullOrWhiteSpace(tipoArquivo))
+            {
+                var anexo = new Attachment(new MemoryStream(arquivo), nomeArquivo, tipoArquivo);
+                mail.Attachments.Add(anexo);
+            }
 
             var smtp = new SmtpClient(_server, _port);
             smtp.EnableSsl = true;
