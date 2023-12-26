@@ -1,4 +1,5 @@
-﻿using iscaslune.Api.Application.Interfaces;
+﻿using iscas_lune_api.Discord.Client;
+using iscaslune.Api.Application.Interfaces;
 using iscaslune.Api.Dtos.Cores;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ public class CorController : ControllerBaseIscasLune
 {
     private readonly ICorService _corService;
 
-    public CorController(ICorService corService)
+    public CorController(ICorService corService, IDiscordNotification discordNotification) : base(discordNotification)
     {
         _corService = corService;
     }
@@ -25,7 +26,7 @@ public class CorController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
     [EnableCors("iscasluneorigin")]
@@ -39,7 +40,7 @@ public class CorController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
     [EnableCors("iscasluneorigin")]
@@ -53,7 +54,7 @@ public class CorController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 }

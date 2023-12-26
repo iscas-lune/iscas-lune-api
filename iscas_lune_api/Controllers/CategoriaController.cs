@@ -1,4 +1,5 @@
-﻿using iscaslune.Api.Application.Interfaces;
+﻿using iscas_lune_api.Discord.Client;
+using iscaslune.Api.Application.Interfaces;
 using iscaslune.Api.Dtos.Categorias;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ public class CategoriaController : ControllerBaseIscasLune
 {
     private readonly ICategoriaService _categoriaService;
 
-    public CategoriaController(ICategoriaService categoriaService)
+    public CategoriaController(ICategoriaService categoriaService, IDiscordNotification discordNotification) : base(discordNotification)
     {
         _categoriaService = categoriaService;
     }
@@ -26,7 +27,7 @@ public class CategoriaController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 
@@ -41,7 +42,7 @@ public class CategoriaController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 
@@ -56,7 +57,7 @@ public class CategoriaController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 }

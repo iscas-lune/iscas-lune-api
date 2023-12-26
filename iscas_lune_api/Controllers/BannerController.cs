@@ -1,4 +1,5 @@
-﻿using iscaslune.Api.Application.Interfaces;
+﻿using iscas_lune_api.Discord.Client;
+using iscaslune.Api.Application.Interfaces;
 using iscaslune.Api.Application.Services;
 using iscaslune.Api.Dtos.Banners;
 using iscaslune.Api.Dtos.Categorias;
@@ -15,7 +16,7 @@ public class BannerController
 {
     private readonly IBannerService _bannerService;
 
-    public BannerController(IBannerService bannerService)
+    public BannerController(IBannerService bannerService, IDiscordNotification discordNotification) : base(discordNotification)
     {
         _bannerService = bannerService;
     }
@@ -30,7 +31,7 @@ public class BannerController
 		}
 		catch (Exception ex)
 		{
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
 		}
     }
 
@@ -45,7 +46,7 @@ public class BannerController
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 }

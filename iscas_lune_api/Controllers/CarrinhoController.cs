@@ -1,4 +1,5 @@
 ﻿using iscas_lune_api.Application.Interfaces;
+using iscas_lune_api.Discord.Client;
 using iscaslune.Api.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -13,7 +14,7 @@ public class CarrinhoController : ControllerBaseIscasLune
 {
     private readonly ICarrinhoService _carrinhoService;
 
-    public CarrinhoController(ICarrinhoService carrinhoService)
+    public CarrinhoController(ICarrinhoService carrinhoService, IDiscordNotification discordNotification) : base(discordNotification)
     {
         _carrinhoService = carrinhoService;
     }
@@ -30,7 +31,7 @@ public class CarrinhoController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 
@@ -45,7 +46,7 @@ public class CarrinhoController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 
@@ -60,7 +61,7 @@ public class CarrinhoController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 }

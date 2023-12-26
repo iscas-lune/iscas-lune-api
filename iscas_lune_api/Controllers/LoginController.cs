@@ -1,4 +1,5 @@
 ﻿using iscas_lune_api.Application.Interfaces;
+using iscas_lune_api.Discord.Client;
 using iscas_lune_api.Model.Login;
 using iscaslune.Api.Controllers;
 using Microsoft.AspNetCore.Cors;
@@ -13,7 +14,7 @@ public class LoginController : ControllerBaseIscasLune
 {
     private readonly ILoginService _loginService;
 
-    public LoginController(ILoginService loginService)
+    public LoginController(ILoginService loginService, IDiscordNotification discordNotification) : base(discordNotification)
     {
         _loginService = loginService;
     }
@@ -31,7 +32,7 @@ public class LoginController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 }

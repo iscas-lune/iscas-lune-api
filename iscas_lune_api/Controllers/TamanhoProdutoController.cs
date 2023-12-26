@@ -1,5 +1,6 @@
 ﻿using iscas_lune_api.Application.Interfaces;
 using iscas_lune_api.Application.Services;
+using iscas_lune_api.Discord.Client;
 using iscas_lune_api.Dtos.Cores;
 using iscas_lune_api.Dtos.Tamanhos;
 using iscaslune.Api.Controllers;
@@ -13,7 +14,7 @@ public class TamanhoProdutoController : ControllerBaseIscasLune
 {
     private readonly ITamanhoProdutoService _service;
 
-    public TamanhoProdutoController(ITamanhoProdutoService service)
+    public TamanhoProdutoController(ITamanhoProdutoService service, IDiscordNotification discordNotification) : base(discordNotification)
     {
         _service = service;
     }
@@ -29,7 +30,7 @@ public class TamanhoProdutoController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 }

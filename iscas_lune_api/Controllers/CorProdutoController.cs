@@ -1,4 +1,5 @@
 ﻿using iscas_lune_api.Application.Interfaces;
+using iscas_lune_api.Discord.Client;
 using iscas_lune_api.Dtos.Cores;
 using iscaslune.Api.Controllers;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ public class CorProdutoController : ControllerBaseIscasLune
 {
     private readonly ICorProdutoService _corProdutoService;
 
-    public CorProdutoController(ICorProdutoService corProdutoService)
+    public CorProdutoController(ICorProdutoService corProdutoService, IDiscordNotification discordNotification) : base(discordNotification)
     {
         _corProdutoService = corProdutoService;
     }
@@ -27,7 +28,7 @@ public class CorProdutoController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 }

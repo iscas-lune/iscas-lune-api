@@ -1,4 +1,5 @@
-﻿using iscaslune.Api.Application.Interfaces;
+﻿using iscas_lune_api.Discord.Client;
+using iscaslune.Api.Application.Interfaces;
 using iscaslune.Api.Application.Services;
 using iscaslune.Api.Dtos.Categorias;
 using iscaslune.Api.Dtos.Produtos;
@@ -14,7 +15,7 @@ public class ProdutoController
 {
     private readonly IProdutoService _produtoService;
 
-    public ProdutoController(IProdutoService produtoService)
+    public ProdutoController(IProdutoService produtoService, IDiscordNotification discordNotification) : base(discordNotification)
     {
         _produtoService = produtoService;
     }
@@ -29,7 +30,7 @@ public class ProdutoController
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 
@@ -44,7 +45,7 @@ public class ProdutoController
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 
@@ -59,7 +60,7 @@ public class ProdutoController
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 
@@ -74,7 +75,7 @@ public class ProdutoController
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 }

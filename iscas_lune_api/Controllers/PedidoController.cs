@@ -1,4 +1,5 @@
 ﻿using iscas_lune_api.Application.Interfaces;
+using iscas_lune_api.Discord.Client;
 using iscas_lune_api.Dtos.Pedidos;
 using iscaslune.Api.Controllers;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,7 @@ public class PedidoController : ControllerBaseIscasLune
 {
     private readonly IPedidoService _pedidoService;
 
-    public PedidoController(IPedidoService pedidoService)
+    public PedidoController(IPedidoService pedidoService, IDiscordNotification discordNotification) : base(discordNotification)
     {
         _pedidoService = pedidoService;
     }
@@ -32,7 +33,7 @@ public class PedidoController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 
@@ -47,7 +48,7 @@ public class PedidoController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 }

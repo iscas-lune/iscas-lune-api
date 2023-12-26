@@ -1,4 +1,5 @@
 ﻿using iscas_lune_api.Application.Interfaces;
+using iscas_lune_api.Discord.Client;
 using iscas_lune_api.Dtos.Usuarios;
 using iscaslune.Api.Controllers;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +14,7 @@ public class UsuarioController : ControllerBaseIscasLune
 {
     private readonly IUsuarioService _usuarioService;
 
-    public UsuarioController(IUsuarioService usuarioService)
+    public UsuarioController(IUsuarioService usuarioService, IDiscordNotification discordNotification) : base(discordNotification)
     {
         _usuarioService = usuarioService;
     }
@@ -30,7 +31,7 @@ public class UsuarioController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 
@@ -48,7 +49,7 @@ public class UsuarioController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 
@@ -67,7 +68,7 @@ public class UsuarioController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 
@@ -85,7 +86,7 @@ public class UsuarioController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 }

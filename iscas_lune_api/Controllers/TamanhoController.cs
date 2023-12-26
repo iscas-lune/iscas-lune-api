@@ -1,4 +1,5 @@
-﻿using iscaslune.Api.Application.Interfaces;
+﻿using iscas_lune_api.Discord.Client;
+using iscaslune.Api.Application.Interfaces;
 using iscaslune.Api.Dtos.Tamanhos;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ public class TamanhoController
 {
     private readonly ITamanhoService _tamanhoService;
 
-    public TamanhoController(ITamanhoService tamanhoService)
+    public TamanhoController(ITamanhoService tamanhoService, IDiscordNotification discordNotification) : base(discordNotification)
     {
         _tamanhoService = tamanhoService;
     }
@@ -27,7 +28,7 @@ public class TamanhoController
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 
@@ -42,7 +43,7 @@ public class TamanhoController
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 
@@ -57,7 +58,7 @@ public class TamanhoController
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 }

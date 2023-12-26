@@ -1,4 +1,5 @@
 ﻿using iscas_lune_api.Application.Interfaces;
+using iscas_lune_api.Discord.Client;
 using iscas_lune_api.Dtos.Usuarios;
 using iscaslune.Api.Controllers;
 using Microsoft.AspNetCore.Cors;
@@ -13,7 +14,7 @@ public class EsqueceuSenhaController : ControllerBaseIscasLune
 {
     private readonly IEsqueceSenhaService _esqueceSenhaService;
 
-    public EsqueceuSenhaController(IEsqueceSenhaService esqueceSenhaService)
+    public EsqueceuSenhaController(IEsqueceSenhaService esqueceSenhaService, IDiscordNotification discordNotification) : base(discordNotification)
     {
         _esqueceSenhaService = esqueceSenhaService;
     }
@@ -30,7 +31,7 @@ public class EsqueceuSenhaController : ControllerBaseIscasLune
         }
         catch (Exception ex)
         {
-            return HandleError(ex.Message);
+            return await HandleError(ex.Message);
         }
     }
 }
