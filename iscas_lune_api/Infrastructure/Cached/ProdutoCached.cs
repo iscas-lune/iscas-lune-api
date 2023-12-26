@@ -93,7 +93,7 @@ public class ProdutoCached
 
     public async Task<List<Produto>?> GetProdutosByCategoriaAsync(Guid categoriaId)
     {
-        var produtos = await _cachedService.GetListItemAsync(_keyList + categoriaId);
+        var produtos = await _cachedService.GetListItemAsync($"{_keyList}-{categoriaId}");
 
         if(produtos == null)
         {

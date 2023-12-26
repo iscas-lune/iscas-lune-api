@@ -16,8 +16,8 @@ public class PedidoRepository : GenericRepository<Pedido>, IPedidoRepository
 
     public async Task<Pedido?> GetPedidoByIdAsync(Guid id)
     {
-        return await _context
-            .Pedidos
+        return await _context.Pedidos
+            .AsNoTracking()
             .Include(x => x.ItensPedido)
                 .ThenInclude(x => x.Produto)
             .Include(x => x.Usuario)
@@ -25,13 +25,14 @@ public class PedidoRepository : GenericRepository<Pedido>, IPedidoRepository
                 .ThenInclude(x => x.Tamanho)
             .Include(x => x.ItensPedido)
                 .ThenInclude(x => x.Peso)
-            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<List<Pedido>?> GetPedidosByUsuarioIdAsync(Guid usuarioId, int statusPedido)
     {
         return await _context.Pedidos
+            .AsNoTracking()
+            .OrderByDescending(x => x.Numero)
             .AsQueryable()
             .Include(x => x.ItensPedido)
                 .ThenInclude(x => x.Produto)
@@ -40,7 +41,6 @@ public class PedidoRepository : GenericRepository<Pedido>, IPedidoRepository
             .Include(x => x.ItensPedido)
                 .ThenInclude(x => x.Peso)
             .Where(x => x.UsuarioId == usuarioId && x.StatusPedido == (StatusPedido)statusPedido)
-            .AsNoTracking()
             .ToListAsync();
     }
 }
