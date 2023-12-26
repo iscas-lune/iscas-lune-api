@@ -7,4 +7,5 @@ public interface IPedidoService
 {
     Task<(string? error, bool result)> CreatePedidoAsync(PedidoCreateDto pedidoCreateDto);
     Task<List<PedidoViewModel>> GetPedidosUsuario(int statusPedido);
+    Task<bool> UpdateStatusPedidoAsync(UpdateStatusPedidoDto updateStatusPedidoDto);
 }

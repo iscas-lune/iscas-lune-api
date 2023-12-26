@@ -51,6 +51,16 @@ public class PedidosCached : GenericRepository<Pedido>, IPedidoRepository
         return pedido;
     }
 
+    public async Task<Pedido?> GetPedidoByUpdateStatusAsync(Guid id)
+    {
+        var pedido = await _pedidoRepository.GetPedidoByUpdateStatusAsync(id);
+
+        if (pedido != null)
+            await _cachedService.RemoveCachedAsync($"pedido-{pedido.Id}");
+
+        return pedido;
+    }
+
     public async Task<List<Pedido>?> GetPedidosByUsuarioIdAsync(Guid usuarioId, int statusPedido)
     {
         var key = $"pedidos-{usuarioId}-{statusPedido}";

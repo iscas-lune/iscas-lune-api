@@ -7,4 +7,5 @@ public interface IPedidoRepository : IGenericRepository<Pedido>
 {
     Task<List<Pedido>?> GetPedidosByUsuarioIdAsync(Guid usuarioId, int statusPedido);
     Task<Pedido?> GetPedidoByIdAsync(Guid id);
+    Task<Pedido?> GetPedidoByUpdateStatusAsync(Guid id);
 }

@@ -15,6 +15,11 @@ public sealed class Pedido : BaseEntity
     public Usuario Usuario { get; set; } = null!;
     public decimal ValorTotal { get { return ItensPedido.Sum(x => x.ValorTotal); } }
     public List<ItensPedido> ItensPedido { get; set; } = new();
+
+    public void UpdateStatus(StatusPedido statusPedido)
+    {
+        StatusPedido = statusPedido;
+    }
 }
 
 public enum StatusPedido

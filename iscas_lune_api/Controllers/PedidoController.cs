@@ -10,7 +10,7 @@ namespace iscas_lune_api.Controllers;
 
 [ApiController]
 [Route("api/pedido")]
-[Authorize(AuthenticationSchemes = "Bearer")]
+
 public class PedidoController : ControllerBaseIscasLune
 {
     private readonly IPedidoService _pedidoService;
@@ -20,6 +20,7 @@ public class PedidoController : ControllerBaseIscasLune
         _pedidoService = pedidoService;
     }
 
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [EnableCors("iscasluneoriginwithpost")]
     [HttpPost("create")]
     public async Task<IActionResult> CreatePedido(PedidoCreateDto pedidoCreateDto)
@@ -37,6 +38,22 @@ public class PedidoController : ControllerBaseIscasLune
         }
     }
 
+    [HttpPut("update-status")]
+    public async Task<IActionResult> UpdateStatusPedido(UpdateStatusPedidoDto updateStatusPedidoDto)
+    {
+        try
+        {
+            var result = await _pedidoService.UpdateStatusPedidoAsync(updateStatusPedidoDto);
+            if (!result) return await HandleError("Não foi possível atualizar o status do pedido!");
+            return Ok(new { message = "Pedido atualizado com sucesso!" });
+        }
+        catch (Exception ex)
+        {
+            return await HandleError(ex.Message);
+        }
+    }
+
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [EnableCors("iscasluneorigin")]
     [HttpGet("list")]
     public async Task<IActionResult> GetPedidos([FromQuery] int statusPedido)

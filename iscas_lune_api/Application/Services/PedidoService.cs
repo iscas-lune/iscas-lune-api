@@ -65,4 +65,15 @@ public class PedidoService : IPedidoService
 
         return pedidos?.Select(x => new PedidoViewModel().ForModel(x) ?? new()).ToList() ?? new();
     }
+
+    public async Task<bool> UpdateStatusPedidoAsync(UpdateStatusPedidoDto updateStatusPedidoDto)
+    {
+        var pedido = await _pedidoRepository.GetPedidoByUpdateStatusAsync(updateStatusPedidoDto.PedidoId);
+
+        if(pedido == null) return false;
+
+        pedido.UpdateStatus(updateStatusPedidoDto.StatusPedido);
+
+        return await _pedidoRepository.UpdateAsync(pedido);
+    }
 }

@@ -28,6 +28,11 @@ public class PedidoRepository : GenericRepository<Pedido>, IPedidoRepository
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
+    public async Task<Pedido?> GetPedidoByUpdateStatusAsync(Guid id)
+    {
+        return await _context.Pedidos.FirstOrDefaultAsync(x => x.Id == id);
+    }
+
     public async Task<List<Pedido>?> GetPedidosByUsuarioIdAsync(Guid usuarioId, int statusPedido)
     {
         return await _context.Pedidos
