@@ -1,6 +1,7 @@
 ﻿using iscaslune.Api.Domain.Context;
 using iscaslune.Api.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using static iTextSharp.text.pdf.events.IndexEvents;
 
 namespace iscaslune.Api.Infrastructure.Repositories;
 
@@ -17,6 +18,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         //_context.Entry(entity).Property("Numero").CurrentValue = await GetNextNumberAsync();
         await _context.Set<T>().AddAsync(entity);
+        return await _context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> AddRangeAsync(List<T> entities)
+    {
+        await _context.Set<T>().AddRangeAsync(entities);
         return await _context.SaveChangesAsync() > 0;
     }
 

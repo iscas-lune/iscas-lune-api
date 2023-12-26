@@ -3,5 +3,4 @@
 public class CreateTamanhoProdutoDto
 {
     public Guid ProdutoId { get; set; }
-    public Guid TamanhoId { get; set; }
 }

@@ -45,7 +45,7 @@ public class PedidosEmAbertoWorker : BackgroundService
                             Embeds = new Embeds[] 
                             {
                                 new() {
-                                    Description = "Pedido gerado com sucesso! \nConfira se e-mail",
+                                    Description = $"Pedido gerado com sucesso!\n Id do pedido => {pedidoEmAberto.PedidoId} \nConfira se e-mail",
                                     Title = "Pedido"
                                 }
                             }

@@ -33,8 +33,8 @@ public class ProdutoViewModel : BaseModel<Produto, ProdutoViewModel>
         Descricao = entity.Descricao;
         EspecificacaoTecnica = entity.EspecificacaoTecnica;
         Foto = Encoding.UTF8.GetString(entity.Foto);
-        Tamanhos = entity.Tamanhos.Select(x => new TamanhoViewModel().ForModel(x) ?? new()).ToList();
-        Pesos = entity.Pesos.Select(x => new PesoViewModel().ForModel(x) ?? new()).ToList();
+        Tamanhos = entity.Tamanhos.OrderBy(x => x.Numero).Select(x => new TamanhoViewModel().ForModel(x) ?? new()).ToList();
+        Pesos = entity.Pesos.OrderBy(x => x.Numero).Select(x => new PesoViewModel().ForModel(x) ?? new()).ToList();
         Categoria = new CategoriaViewModel().ForModel(entity.Categoria);
         CategoriaId = entity.CategoriaId;
         Referencia = entity.Referencia;

@@ -27,7 +27,8 @@ public abstract class ControllerBaseIscasLune : ControllerBase
             {
                 new() {
                     Description = message,
-                    Title = "Error api"
+                    Title = "Error api",
+                    Color = 0xFF0000
                 }
             }
         };

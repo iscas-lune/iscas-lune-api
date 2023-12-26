@@ -17,6 +17,6 @@ public class PedidosEmAbertoRepository
 
     public async Task<PedidosEmAberto?> GetFirstOrDefautlAsync()
     {
-        return await _context.PedidosEmAberto.FirstOrDefaultAsync();
+        return await _context.PedidosEmAberto.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
     }
 }
