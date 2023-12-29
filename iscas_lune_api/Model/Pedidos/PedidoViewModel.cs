@@ -20,7 +20,7 @@ public class PedidoViewModel : BaseModel<Pedido, PedidoViewModel>
         ItensPedido = entity.ItensPedido.Select(x =>
         {
             return new ItensPedidoViewModel().ForModel(x) ?? new();
-        }).ToList();    
+        }).OrderBy(x => x.Numero).ToList();    
         return this;
     }
 }
