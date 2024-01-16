@@ -1,10 +1,12 @@
-﻿using iscaslune.Api.Model.Produtos;
+﻿using iscas_lune_api.Dtos.Carrinhos;
+using iscas_lune_api.Model.Carrinho;
+using iscaslune.Api.Model.Produtos;
 
 namespace iscas_lune_api.Application.Interfaces;
 
 public interface ICarrinhoService
 {
-    Task<bool> AdicionarProdutoAsync(Guid produtoId);
-    Task<List<ProdutoViewModel>> GetCarrinhoAsync();
+    Task<bool> AdicionarProdutoAsync(AddCarrinhoDto addCarrinhoDto);
+    Task<List<CarrinhoViewModel>> GetCarrinhoAsync();
     Task<int> GetCountCarrinhoAsync();
 }

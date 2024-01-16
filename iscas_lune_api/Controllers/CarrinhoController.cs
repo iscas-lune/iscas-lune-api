@@ -1,5 +1,6 @@
 ﻿using iscas_lune_api.Application.Interfaces;
 using iscas_lune_api.Discord.Client;
+using iscas_lune_api.Dtos.Carrinhos;
 using iscaslune.Api.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -21,11 +22,11 @@ public class CarrinhoController : ControllerBaseIscasLune
 
     [EnableCors("iscasluneoriginwithpost")]
     [HttpPut("adicionar")]
-    public async Task<IActionResult> AdicionarCarinho([FromQuery] Guid produtoId)
+    public async Task<IActionResult> AdicionarCarinho(AddCarrinhoDto addCarrinhoDto)
     {
         try
         {
-            var result = await _carrinhoService.AdicionarProdutoAsync(produtoId);
+            var result = await _carrinhoService.AdicionarProdutoAsync(addCarrinhoDto);
             if (!result) return BadRequest(new { message = "Ocorreu um erro interno, tente novamente mais tarde!" });
             return Ok(new { message = "Produto adicionado com sucesso!" });
         }

@@ -23,6 +23,8 @@ public class CreateUsuarioDto : BaseDto<Usuario>
     public string ReSenha { get; set; } = string.Empty;
     [MaxLength(15)]
     public string? Telefone { get; set; } = string.Empty;
+    [MaxLength(20)]
+    public string? Cnpj { get; set; } = string.Empty;
 
     public override Usuario ForEntity()
     {
@@ -37,6 +39,7 @@ public class CreateUsuarioDto : BaseDto<Usuario>
             Email,
             senha,
             Nome,
-            Telefone);
+            Telefone,
+            Cnpj);
     }
 }

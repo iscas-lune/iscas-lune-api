@@ -72,7 +72,7 @@ public class PdfPedido : IPdfPedido
             tableContato.DefaultCell.FixedHeight = 20;
             tableContato.WidthPercentage = 100;
 
-            var dadosUsuario = $" Cliente : {pedido.Usuario.Nome} \n E-mail : {pedido.Usuario.Email}\n Telefone : {pedido.Usuario.Telefone ?? "N/A"}";
+            var dadosUsuario = $" Cliente : {pedido.Usuario.Nome} \n E-mail : {pedido.Usuario.Email}\n Telefone : {pedido.Usuario.Telefone ?? "N/A"}\n CNPJ : {pedido.Usuario.Cnpj ?? "Sem CNPJ"}";
             var cellCliente = new PdfPCell(new Phrase(dadosUsuario, fontCabecalho));
             tableContato.AddCell(cellCliente);
 

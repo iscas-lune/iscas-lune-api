@@ -4,6 +4,7 @@ using iscaslune.Api.Dtos.Produtos;
 using iscaslune.Api.Infrastructure.Filtros.Filtros;
 using iscaslune.Api.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace iscaslune.Api.Infrastructure.Repositories;
 
@@ -14,12 +15,12 @@ public class ProdutoRepository
 
     public ProdutoRepository(IscasLuneContext context) : base(context)
     {
-        _context = context;    
+        _context = context;
     }
 
     public async Task<Produto?> GetProdutoByIdAsync(Guid id)
     {
-        return await _context
+        var produto = await _context
             .Produtos
             .Include(x => x.Categoria)
             .Include(x => x.Pesos)
@@ -28,11 +29,31 @@ public class ProdutoRepository
                 .ThenInclude(x => x.PrecoProduto)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (produto != null)
+        {
+            produto.Categoria.Produtos = new();
+            produto.Pesos.ForEach(peso =>
+            {
+                if (peso.PrecoProdutoPeso != null)
+                    peso.PrecoProdutoPeso.Peso = null;
+                peso.Produtos = new();
+                peso.Produtos = new();
+            });
+            produto.Tamanhos.ForEach(tamanho =>
+            {
+                if (tamanho.PrecoProduto != null)
+                    tamanho.PrecoProduto.Tamanho = null;
+                tamanho.Produtos = new();
+            });
+        }
+
+        return produto;
     }
 
     public async Task<List<Produto>?> GetProdutosAsync(PaginacaoProdutoDto paginacaoProduto)
     {
-        return await _context
+        var produtos = await _context
             .Produtos
             .AsQueryable()
             .Include(x => x.Categoria)
@@ -43,6 +64,28 @@ public class ProdutoRepository
             .FilterAll(paginacaoProduto)
             .AsNoTracking()
             .ToListAsync();
+
+        if (produtos.Count > 0)
+        {
+            produtos.ForEach(produto =>
+            {
+                produto.Categoria.Produtos = new();
+                produto.Pesos.ForEach(peso =>
+                {
+                    if (peso.PrecoProdutoPeso != null)
+                        peso.PrecoProdutoPeso.Peso = null;
+                    peso.Produtos = new();
+                });
+                produto.Tamanhos.ForEach(tamanho =>
+                {
+                    if (tamanho.PrecoProduto != null)
+                        tamanho.PrecoProduto.Tamanho = null;
+                    tamanho.Produtos = new();
+                });
+            });
+        }
+
+        return produtos;
     }
 
     public async Task<List<Produto>> GetProdutosByCarrinhoAsync(List<Guid> produtosIds)
@@ -70,7 +113,7 @@ public class ProdutoRepository
             });
             produto.Tamanhos.ForEach(tamanho =>
             {
-                if(tamanho.PrecoProduto != null)
+                if (tamanho.PrecoProduto != null)
                     tamanho.PrecoProduto.Tamanho = null;
                 tamanho.Produtos = new();
             });
@@ -81,9 +124,10 @@ public class ProdutoRepository
 
     public async Task<List<Produto>?> GetProdutosByCategoriaAsync(Guid categoriaId)
     {
-        return await _context
+        var produtos = await _context
             .Produtos
             .AsQueryable()
+            .OrderBy(x => x.Numero)
             .Include(x => x.Categoria)
             .Include(x => x.Pesos)
                 .ThenInclude(x => x.PrecoProdutoPeso)
@@ -92,5 +136,27 @@ public class ProdutoRepository
             .Where(x => x.CategoriaId == categoriaId)
             .AsNoTracking()
             .ToListAsync();
+
+        if (produtos.Count > 0)
+        {
+            produtos.ForEach(produto =>
+            {
+                produto.Categoria.Produtos = new();
+                produto.Pesos.ForEach(peso =>
+                {
+                    if (peso.PrecoProdutoPeso != null)
+                        peso.PrecoProdutoPeso.Peso = null;
+                    peso.Produtos = new();
+                });
+                produto.Tamanhos.ForEach(tamanho =>
+                {
+                    if (tamanho.PrecoProduto != null)
+                        tamanho.PrecoProduto.Tamanho = null;
+                    tamanho.Produtos = new();
+                });
+            });
+        }
+
+        return produtos;
     }
 }

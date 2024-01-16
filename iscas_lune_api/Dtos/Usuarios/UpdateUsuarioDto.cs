@@ -12,5 +12,7 @@ public class UpdateUsuarioDto
     [DataType(DataType.EmailAddress)]
     public string Email { get; set; } = string.Empty;
     [MaxLength(15)]
-    public string? Telefone { get; set; } = string.Empty;
+    public string? Telefone { get; set; }
+    [MaxLength(20)]
+    public string? Cnpj { get; set; }
 }

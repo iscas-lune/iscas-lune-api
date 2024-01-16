@@ -1,8 +1,13 @@
 ﻿using iscas_lune_api.Application.Interfaces;
+using iscas_lune_api.Dtos.Carrinhos;
 using iscas_lune_api.Model.Carrinho;
+using iscas_lune_api.Model.PrecosProdutos;
 using iscaslune.Api.Infrastructure.Interfaces;
+using iscaslune.Api.Model.Categorias;
+using iscaslune.Api.Model.Cores;
 using iscaslune.Api.Model.Produtos;
 using Microsoft.Extensions.Caching.Distributed;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -34,7 +39,7 @@ public class CarrinhoService : ICarrinhoService
         _tokenService = tokenService;
         _produtoRepository = produtoRepository;
     }
-    public async Task<bool> AdicionarProdutoAsync(Guid produtoId)
+    public async Task<bool> AdicionarProdutoAsync(AddCarrinhoDto addCarrinhoDto)
     {
         var claims = _tokenService.GetClaims();
         var key = $"carrinho-{claims.Id}";
@@ -51,15 +56,69 @@ public class CarrinhoService : ICarrinhoService
             await _distributedCache.RemoveAsync(key);
         }
 
-        var newProduto = carrinho?.ProdutosIds.FirstOrDefault(x => x == produtoId);
-        if (newProduto == null || newProduto == Guid.Empty) carrinho?.ProdutosIds.Add(produtoId);
+        var addProduto = carrinho?.Produtos.FirstOrDefault(x => x.ProdutoId == addCarrinhoDto.ProdutoId);
+
+        if(addProduto == null)
+        {
+            addProduto = new() 
+            {
+                ProdutoId = addCarrinhoDto.ProdutoId,
+                Pesos = addCarrinhoDto.Pesos,
+                Tamanhos = addCarrinhoDto.Tamanhos
+            };
+
+            carrinho?.Produtos.Add(addProduto);
+        }
+        else
+        {
+            foreach (var pesoCarrinho in addCarrinhoDto.Pesos)
+            {
+                var peso = addProduto.Pesos.FirstOrDefault(ps => ps.PesoId == pesoCarrinho.PesoId);
+                if(peso == null)
+                {
+                    peso = new() 
+                    {
+                        PesoId = pesoCarrinho.PesoId,
+                        Quantidade = pesoCarrinho.Quantidade
+                    };
+
+                    addProduto.Pesos.Add(peso);
+                }
+                else
+                {
+                    peso.Quantidade += pesoCarrinho.Quantidade;
+                }
+            }
+
+            foreach (var tamanhoCarrinho in addCarrinhoDto.Tamanhos)
+            {
+                var tamanho = addProduto.Tamanhos.FirstOrDefault(tm => tm.TamanhoId == tamanhoCarrinho.TamanhoId);
+                
+                if(tamanho == null)
+                {
+                    tamanho = new()
+                    {
+                        TamanhoId = tamanhoCarrinho.TamanhoId,
+                        Quantidade = tamanhoCarrinho.Quantidade
+                    };
+
+                    addProduto.Tamanhos.Add(tamanho);   
+                }
+                else
+                {
+                    tamanho.Quantidade += tamanho.Quantidade;
+                }
+            }
+        }
+
         await _distributedCache.SetStringAsync(key, JsonSerializer.Serialize(carrinho), _options);
         return true;
-
     }
 
-    public async Task<List<ProdutoViewModel>> GetCarrinhoAsync()
+    public async Task<List<CarrinhoViewModel>> GetCarrinhoAsync()
     {
+        var carrinhosViewModels = new List<CarrinhoViewModel>();
+
         var claims = _tokenService.GetClaims();
         var carrinho = new CarrinhoModel
         {
@@ -71,10 +130,67 @@ public class CarrinhoService : ICarrinhoService
             carrinho = JsonSerializer.Deserialize<CarrinhoModel>(carrinhoString, _serializerOptions)
                 ?? new() { UsuarioId = claims.Id };
         }
+        var produtosIds = carrinho
+                .Produtos
+                .Select(x => x.ProdutoId).ToList();
+        var produtos = await _produtoRepository
+            .GetProdutosByCarrinhoAsync(produtosIds);
 
-        var produtos = await _produtoRepository.GetProdutosByCarrinhoAsync(carrinho.ProdutosIds);
+        foreach (var produto in produtos)
+        {
+            var carrinhoViewModel = new CarrinhoViewModel()
+            {
+                Categoria = new CategoriaViewModel().ForModel(produto.Categoria),
+                CategoriaId = produto.CategoriaId,
+                Descricao = produto.Descricao,
+                EspecificacaoTecnica = produto.EspecificacaoTecnica,
+                Foto = Encoding.UTF8.GetString(produto.Foto),
+                Id = produto.Id,
+                Referencia = produto.Referencia
+            };
 
-        return produtos.Select(x => new ProdutoViewModel().ForModel(x) ?? new()).ToList();
+            carrinhoViewModel.Tamanhos = produto.Tamanhos.OrderBy(x => x.Numero).Select(x => new TamanhoCarrinhoViewModel()
+            {
+                Id = x.Id,
+                Descricao = x.Descricao,
+                Numero = x.Numero,
+                PrecoProduto = new PrecoProdutoCarrinhoViewModel()
+                {
+                    Id = x.PrecoProduto.Id,
+                    Preco = x.PrecoProduto.Preco,
+                    PrecoCusto = x.PrecoProduto.PrecoCusto,
+                    PrecoPromocional = x.PrecoProduto.PrecoPromocional,
+                    Quantidade = (decimal)(carrinho?
+                        .Produtos?
+                        .FirstOrDefault(pr => pr.ProdutoId == produto.Id)?
+                            .Tamanhos.FirstOrDefault(tm => tm.TamanhoId == x.Id)?
+                                .Quantidade ?? 0)
+                }
+            }).ToList();
+
+            carrinhoViewModel.Pesos = produto.Pesos.OrderBy(x => x.Numero).Select(x => new PesoCarrinhoViewModel() 
+            { 
+                Id = x.Id,
+                Descricao = x.Descricao,
+                Numero = x.Numero,
+                PrecoProduto = new PrecoProdutoCarrinhoViewModel()
+                {
+                    Preco = x.PrecoProdutoPeso.Preco,
+                    Id = x.PrecoProdutoPeso.Id,
+                    PrecoCusto = x.PrecoProdutoPeso.PrecoCusto,
+                    PrecoPromocional = x.PrecoProdutoPeso.PrecoPromocional,
+                    Quantidade = (decimal)(carrinho?
+                        .Produtos?
+                        .FirstOrDefault(pr => pr.ProdutoId == produto.Id)?
+                            .Pesos.FirstOrDefault(ps => ps.PesoId == x.Id)?
+                                .Quantidade ?? 0)
+                }
+            }).ToList();
+
+            carrinhosViewModels.Add(carrinhoViewModel);
+        }
+
+        return carrinhosViewModels;
     }
 
     public async Task<int> GetCountCarrinhoAsync()
@@ -86,6 +202,6 @@ public class CarrinhoService : ICarrinhoService
 
         var carrinho = JsonSerializer.Deserialize<CarrinhoModel>(carrinhoString);
         if (carrinho == null) return 0;
-        return carrinho.ProdutosIds.Count;
+        return carrinho.Produtos.Select(x => x.ProdutoId).ToList().Count;
     }
 }

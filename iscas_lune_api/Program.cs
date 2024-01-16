@@ -23,6 +23,7 @@ internal class Program
         builder.Services.InjectCors();
         builder.Services.InjectHttpClient();
         builder.Services.AddHostedService<PedidosEmAbertoWorker>();
+        builder.Services.AddMemoryCache();
 
         var app = builder.Build();
 

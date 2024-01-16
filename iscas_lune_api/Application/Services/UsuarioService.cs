@@ -61,12 +61,19 @@ public class UsuarioService : IUsuarioService
         var claims = _tokenService.GetClaims() ?? new();
         var usuario = await _usuarioRepository.GetUsuarioByIdAsync(claims.Id)
             ?? throw new Exception("Ocorreu um erro interno, tente novamente mais tarde!");
-        usuario.Update(updateUsuarioDto.Email, updateUsuarioDto.Nome, updateUsuarioDto.Telefone);
+
+        usuario.Update(updateUsuarioDto.Email, updateUsuarioDto.Nome, updateUsuarioDto.Telefone, updateUsuarioDto.Cnpj);
+        
         var result = await _usuarioRepository.UpdateAsync(usuario);
-        if (!result) throw new Exception("Ocorreu um erro interno, tente novamente mais tarde!");
+        
+        if (!result) 
+            throw new Exception("Ocorreu um erro interno, tente novamente mais tarde!");
+        
         var usuarioViewModel = new UsuarioViewModel().ForModel(usuario)
             ?? throw new ArgumentException("Usuário inválido!");
+        
         await _cachedService.RemoveCachedAsync(usuario.Id.ToString());
+        
         return new ResponseLoginModel(usuarioViewModel, _tokenService.GenerateToken(usuario), null);
     }
 }
