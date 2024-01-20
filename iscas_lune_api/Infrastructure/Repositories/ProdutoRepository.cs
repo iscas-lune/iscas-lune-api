@@ -69,6 +69,7 @@ public class ProdutoRepository
             .Produtos
             .AsNoTracking()
             .AsQueryable()
+            .OrderBy(x => x.Numero)
             .Include(x => x.Categoria)
             .Skip(newPage * take)
             .Take(take)
