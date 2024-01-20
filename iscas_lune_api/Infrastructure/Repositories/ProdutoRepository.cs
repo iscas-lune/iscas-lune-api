@@ -1,10 +1,13 @@
-﻿using iscaslune.Api.Domain.Context;
+﻿using iscas_lune_api.Infrastructure.Interfaces;
+using iscaslune.Api.Domain.Context;
 using iscaslune.Api.Domain.Entities;
 using iscaslune.Api.Dtos.Produtos;
 using iscaslune.Api.Infrastructure.Filtros.Filtros;
 using iscaslune.Api.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Diagnostics;
+using System.Linq;
 
 namespace iscaslune.Api.Infrastructure.Repositories;
 
@@ -12,10 +15,14 @@ public class ProdutoRepository
     : GenericRepository<Produto>, IProdutoRepository
 {
     private readonly IscasLuneContext _context;
+    private readonly ITamanhoProdutoRepository _tamanhoRepository;
+    private readonly IPrecoProdutoRepository _precoProdutoRepository;
 
-    public ProdutoRepository(IscasLuneContext context) : base(context)
+    public ProdutoRepository(IscasLuneContext context, ITamanhoProdutoRepository tamanhoRepository, IPrecoProdutoRepository precoProdutoRepository) : base(context)
     {
         _context = context;
+        _tamanhoRepository = tamanhoRepository;
+        _precoProdutoRepository = precoProdutoRepository;
     }
 
     public async Task<Produto?> GetProdutoByIdAsync(Guid id)
@@ -58,30 +65,25 @@ public class ProdutoRepository
             .AsNoTracking()
             .AsQueryable()
             .Include(x => x.Categoria)
-            .Include(x => x.Pesos)
-                .ThenInclude(x => x.PrecoProdutoPeso)
-            .Include(x => x.Tamanhos)
-                .ThenInclude(x => x.PrecoProduto)
-            //.FilterAll(paginacaoProduto)
             .ToListAsync();
+
+        var tamanhos = await _tamanhoRepository.GetTamanhosProdutosAsync() ?? new();
+        var precosProdutos = await _precoProdutoRepository.GetPrecosProdutosAsync();
 
         if (produtos.Count > 0)
         {
             produtos.ForEach(produto =>
             {
                 produto.Categoria.Produtos = new();
-                produto.Pesos.ForEach(peso =>
-                {
-                    if (peso.PrecoProdutoPeso != null)
-                        peso.PrecoProdutoPeso.Peso = null;
-                    peso.Produtos = new();
-                });
-                produto.Tamanhos.ForEach(tamanho =>
-                {
-                    if (tamanho.PrecoProduto != null)
-                        tamanho.PrecoProduto.Tamanho = null;
-                    tamanho.Produtos = new();
-                });
+                produto.Tamanhos = tamanhos
+                    .Where(x => x.ProdutoId == produto.Id)
+                    .Select(tm => 
+                        new Tamanho(tm.Tamanho.Id, tm.Tamanho.DataCriacao, tm.Tamanho.DataAtualizacao, tm.Tamanho.Numero, tm.Tamanho.Descricao)
+                        {
+                            PrecoProduto = precosProdutos.FirstOrDefault(pr => pr.TamanhoId == tm.Tamanho.Id)
+                        }
+                     )
+                    .ToList();
             });
         }
 
@@ -126,34 +128,25 @@ public class ProdutoRepository
     {
         var produtos = await _context
             .Produtos
-            .AsQueryable()
-            .OrderBy(x => x.Numero)
-            .Include(x => x.Categoria)
-            .Include(x => x.Pesos)
-                .ThenInclude(x => x.PrecoProdutoPeso)
-            .Include(x => x.Tamanhos)
-                .ThenInclude(x => x.PrecoProduto)
-            .Where(x => x.CategoriaId == categoriaId)
             .AsNoTracking()
+            .AsQueryable()
+            .Include(x => x.Categoria)
+            .Where(x => x.CategoriaId == categoriaId)
             .ToListAsync();
+
+        var tamanhos = await _tamanhoRepository.GetTamanhosProdutosAsync() ?? new();
 
         if (produtos.Count > 0)
         {
             produtos.ForEach(produto =>
             {
                 produto.Categoria.Produtos = new();
-                produto.Pesos.ForEach(peso =>
-                {
-                    if (peso.PrecoProdutoPeso != null)
-                        peso.PrecoProdutoPeso.Peso = null;
-                    peso.Produtos = new();
-                });
-                produto.Tamanhos.ForEach(tamanho =>
-                {
-                    if (tamanho.PrecoProduto != null)
-                        tamanho.PrecoProduto.Tamanho = null;
-                    tamanho.Produtos = new();
-                });
+                produto.Tamanhos = tamanhos
+                    .Where(x => x.ProdutoId == produto.Id)
+                    .Select(tm =>
+                        new Tamanho(tm.Tamanho.Id, tm.Tamanho.DataCriacao, tm.Tamanho.DataAtualizacao, tm.Tamanho.Numero, tm.Tamanho.Descricao)
+                     )
+                    .ToList();
             });
         }
 

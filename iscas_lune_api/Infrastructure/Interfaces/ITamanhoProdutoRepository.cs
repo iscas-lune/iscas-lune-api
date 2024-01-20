@@ -5,4 +5,5 @@ namespace iscas_lune_api.Infrastructure.Interfaces;
 
 public interface ITamanhoProdutoRepository : IGenericRepository<TamanhosProdutos>
 {
+    Task<List<TamanhosProdutos>?> GetTamanhosProdutosAsync();
 }

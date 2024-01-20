@@ -8,6 +8,7 @@ namespace iscas_lune_api.Model.Carrinho;
 public class CarrinhoViewModel
 {
     public Guid Id { get; set; }
+    public long Numero { get; set; }
     public string Descricao { get; set; } = string.Empty;
     public string? EspecificacaoTecnica { get; set; }
     public string Foto { get; set; } = string.Empty;

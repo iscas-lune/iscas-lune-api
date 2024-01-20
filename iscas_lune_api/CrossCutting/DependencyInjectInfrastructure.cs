@@ -30,8 +30,13 @@ public static class DependencyInjectInfrastructure
         services.AddScoped<BannerRepository>();
         services.AddScoped<IBannerRepository, BannerCached>();
         services.AddScoped<ICorProdutoRepository, CorProdutoRepository>();
-        services.AddScoped<ITamanhoProdutoRepository, TamanhoProdutoRepository>();
+
+        services.AddScoped<TamanhoProdutoRepository>();
+        services.AddScoped<ITamanhoProdutoRepository, TamanhosProdutosCached>();
         services.AddScoped<ILoginRepository, LoginRepository>();
+
+        services.AddScoped<PrecoProdutoRepository>();
+        services.AddScoped<IPrecoProdutoRepository, PrecoProdutoCached>();
 
         services.AddScoped<IPedidoRepository, PedidoRepository>();
         services.AddScoped<IPedidosEmAbertoRepository, PedidosEmAbertoRepository>();
