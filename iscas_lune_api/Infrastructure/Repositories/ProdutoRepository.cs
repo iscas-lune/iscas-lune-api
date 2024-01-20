@@ -55,14 +55,14 @@ public class ProdutoRepository
     {
         var produtos = await _context
             .Produtos
+            .AsNoTracking()
             .AsQueryable()
             .Include(x => x.Categoria)
             .Include(x => x.Pesos)
                 .ThenInclude(x => x.PrecoProdutoPeso)
             .Include(x => x.Tamanhos)
                 .ThenInclude(x => x.PrecoProduto)
-            .FilterAll(paginacaoProduto)
-            .AsNoTracking()
+            //.FilterAll(paginacaoProduto)
             .ToListAsync();
 
         if (produtos.Count > 0)

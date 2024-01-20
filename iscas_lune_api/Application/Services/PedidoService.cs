@@ -46,7 +46,6 @@ public class PedidoService : IPedidoService
 
         if (!result) return ("Ocorreu um erro interno, tente novamente mais tarde!", false);
         await _cachedService.RemoveCachedAsync($"carrinho-{claims.Id}");
-        await _cachedService.RemoveCachedAsync($"pedidos-{claims.Id}-0");
         var pedidoEmAberto = new PedidosEmAberto() 
         {
             Id = Guid.NewGuid(),

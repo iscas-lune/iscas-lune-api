@@ -18,6 +18,7 @@ public class PdfPedido : IPdfPedido
     {
         _celulas = new List<string>()
         {
+            "REF",
             "Descrição",
             "Tamanho/Peso",
             "Quantidade",
@@ -103,25 +104,55 @@ public class PdfPedido : IPdfPedido
             tableDadosProdutos.WidthPercentage = 100;
 
             pedido.ItensPedido = pedido.ItensPedido.OrderBy(x => x.Numero).ToList();
+            var itemsPedidosGroup = pedido.ItensPedido.GroupBy(x => x.ProdutoId);
             const int borderWidth = 0;
 
-            foreach (var item in pedido.ItensPedido)
+            foreach (var itemGroup in itemsPedidosGroup)
             {
-                var tamanhoPesoAtual = item.Tamanho != null ?
+                foreach (var item in itemGroup)
+                {
+                    var tamanhoPesoAtual = item.Tamanho != null ?
                     item.Tamanho.Descricao :
                     item.Peso?.Descricao ?? "";
 
-                var descricao = new PdfPCell(new Phrase(item.Produto.Descricao, font)) { BorderWidth = borderWidth };
-                var tamanhoPeso = new PdfPCell(new Phrase(tamanhoPesoAtual, font)) { BorderWidth = borderWidth };
-                var quantidade = new PdfPCell(new Phrase(item.Quantidade.ToString(), font)) { BorderWidth = borderWidth };
-                var valorUnitario = new PdfPCell(new Phrase(item.ValorUnitario.ToString("N", formato), font)) { BorderWidth = borderWidth };
-                var total = new PdfPCell(new Phrase(item.ValorTotal.ToString("N", formato), font)) { BorderWidth = borderWidth };
+                    var refProduto = new PdfPCell(new Phrase($"REF: {item.Produto.Referencia}", font)) { BorderWidth = borderWidth };
+                    var descricao = new PdfPCell(new Phrase(item.Produto.Descricao, font)) { BorderWidth = borderWidth };
+                    var tamanhoPeso = new PdfPCell(new Phrase(tamanhoPesoAtual, font)) { BorderWidth = borderWidth };
+                    var quantidade = new PdfPCell(new Phrase(item.Quantidade.ToString(), font)) { BorderWidth = borderWidth };
+                    var valorUnitario = new PdfPCell(new Phrase(item.ValorUnitario.ToString("N", formato), font)) { BorderWidth = borderWidth };
+                    var total = new PdfPCell(new Phrase(item.ValorTotal.ToString("N", formato), font)) { BorderWidth = borderWidth };
 
-                tableDadosProdutos.AddCell(descricao);
-                tableDadosProdutos.AddCell(tamanhoPeso);
-                tableDadosProdutos.AddCell(quantidade);
-                tableDadosProdutos.AddCell(valorUnitario);
-                tableDadosProdutos.AddCell(total);
+                    tableDadosProdutos.AddCell(refProduto);
+                    tableDadosProdutos.AddCell(descricao);
+                    tableDadosProdutos.AddCell(tamanhoPeso);
+                    tableDadosProdutos.AddCell(quantidade);
+                    tableDadosProdutos.AddCell(valorUnitario);
+                    tableDadosProdutos.AddCell(total);
+                }
+                var cellFalse = new PdfPCell() { BorderWidth = borderWidth };
+                tableDadosProdutos.AddCell(cellFalse);
+                tableDadosProdutos.AddCell(cellFalse);
+                tableDadosProdutos.AddCell(cellFalse);
+
+                var subTotalQuantidade = itemGroup.Sum(x => x.Quantidade);
+                var subTotalQuantidadeCell = new PdfPCell(new Phrase(subTotalQuantidade.ToString("N", formato), font))
+                {
+                    BorderWidth = borderWidth,
+                    BorderWidthTop = border,
+                    BorderWidthBottom = border
+                };
+
+                tableDadosProdutos.AddCell(subTotalQuantidadeCell);
+                tableDadosProdutos.AddCell(cellFalse);
+
+                var subTotal = itemGroup.Sum(x => x.ValorTotal);
+                var subTotalCel = new PdfPCell(new Phrase($"Sub total: {subTotal.ToString("N", formato)}", font)) 
+                { 
+                    BorderWidth = borderWidth, 
+                    BorderWidthTop = border, 
+                    BorderWidthBottom = border 
+                };
+                tableDadosProdutos.AddCell(subTotalCel);
             }
 
             tableDadosProdutos.SetWidths(columnWidths);
@@ -154,7 +185,7 @@ public class PdfPedido : IPdfPedido
             document.Close();
 
             var emailPedido = EnvironmentVariable.GetVariable("EMAIL_PEDIDO");
-            var message = $"Que ótima noticia, mais um pedido!\nId do pedido : {pedido.Id}";
+            var message = $"Que ótima noticia, mais um pedido!\nN. do pedido : {pedido.Numero}";
             var assunto = "Novo pedido";
             return _emailService.SendEmail(emailPedido, message, assunto, memoryStream.ToArray(), $"pedido-{pedido.Numero}", "application/pdf");
         }

@@ -20,7 +20,8 @@ public class CachedService<T> : ICachedService<T> where T : class
         _serializerOptions = new()
         {
             PropertyNameCaseInsensitive = true,
-            ReferenceHandler = ReferenceHandler.Preserve
+            ReferenceHandler = ReferenceHandler.Preserve,
+            WriteIndented = true
         };
         _options = new DistributedCacheEntryOptions()
                       .SetAbsoluteExpiration(TimeSpan.FromMinutes(_absolutExpiration))

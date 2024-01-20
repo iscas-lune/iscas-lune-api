@@ -21,6 +21,7 @@ public static class DependencyInjectInfrastructure
         services.AddScoped<CategoriaRepository>();
         services.AddScoped<ICategoriaRepository, CategoriaCached>();
 
+        //services.AddScoped<ProdutoRepository>();
         services.AddScoped<IProdutoRepository, ProdutoRepository>();
 
         services.AddScoped<UsuarioRepository>();
@@ -32,8 +33,7 @@ public static class DependencyInjectInfrastructure
         services.AddScoped<ITamanhoProdutoRepository, TamanhoProdutoRepository>();
         services.AddScoped<ILoginRepository, LoginRepository>();
 
-        services.AddScoped<PedidoRepository>();
-        services.AddScoped<IPedidoRepository, PedidosCached>();
+        services.AddScoped<IPedidoRepository, PedidoRepository>();
         services.AddScoped<IPedidosEmAbertoRepository, PedidosEmAbertoRepository>();
     }
 }

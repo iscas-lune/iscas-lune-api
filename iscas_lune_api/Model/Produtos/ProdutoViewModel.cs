@@ -1,27 +1,21 @@
-﻿using iscas_lune_api.Model.PrecosProdutos;
-using iscaslune.Api.Domain.Entities;
+﻿using iscaslune.Api.Domain.Entities;
 using iscaslune.Api.Model.Base;
 using iscaslune.Api.Model.Categorias;
 using iscaslune.Api.Model.Cores;
 using iscaslune.Api.Model.Tamanhos;
 using System.Text;
-using System.Text.Json.Serialization;
 
 namespace iscaslune.Api.Model.Produtos;
 
 public class ProdutoViewModel : BaseModel<Produto, ProdutoViewModel>
 {
     public string Descricao { get; set; } = string.Empty;
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? EspecificacaoTecnica { get; set; }
     public string Foto { get; set; } = string.Empty;
     public List<TamanhoViewModel>? Tamanhos { get; set; } = new();
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<PesoViewModel>? Pesos { get; set; } = new();
     public Guid CategoriaId { get; set; }
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public CategoriaViewModel? Categoria { get; set; } = null!;
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Referencia { get; private set; }
     public override ProdutoViewModel? ForModel(Produto? entity)
     {

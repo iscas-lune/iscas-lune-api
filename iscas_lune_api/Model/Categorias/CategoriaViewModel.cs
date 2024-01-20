@@ -2,16 +2,13 @@
 using iscaslune.Api.Model.Base;
 using iscaslune.Api.Model.Produtos;
 using System.Text;
-using System.Text.Json.Serialization;
 
 namespace iscaslune.Api.Model.Categorias;
 
 public class CategoriaViewModel : BaseModel<Categoria, CategoriaViewModel>
 {
     public string Descricao { get; set; } = string.Empty;
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Foto { get; set; }
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<ProdutoViewModel>? Produtos { get; set; }
 
     public override CategoriaViewModel? ForModel(Categoria? entity)
