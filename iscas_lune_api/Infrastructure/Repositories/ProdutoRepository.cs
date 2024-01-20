@@ -62,9 +62,9 @@ public class ProdutoRepository
     public async Task<(List<Produto>? produtos, int totalPage)> GetProdutosAsync(int page)
     {
         var newPage = page - 1;
-        var take = 10;
+        var take = 5;
         var count = await _context.Produtos.CountAsync();
-        var totalPages = (int)Math.Ceiling((decimal)count / 10);
+        var totalPages = (int)Math.Ceiling((decimal)count / take);
         var produtos = await _context
             .Produtos
             .AsNoTracking()
