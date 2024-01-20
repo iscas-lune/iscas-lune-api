@@ -18,7 +18,7 @@ public sealed class Produto : BaseEntity
 
     public string Descricao { get; private set; }
     public string? EspecificacaoTecnica { get; private set; } 
-    public byte[] Foto { get; private set; }
+    public byte[] Foto { get; set; }
     public List<Tamanho> Tamanhos { get; set; } = new();
     public List<Peso> Pesos { get; set; } = new();
     public Guid CategoriaId { get; private set; }

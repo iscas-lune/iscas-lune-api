@@ -1,10 +1,14 @@
 ﻿using iscas_lune_api.Discord.Client;
+using iscas_lune_api.Dtos.Produtos;
 using iscaslune.Api.Application.Interfaces;
 using iscaslune.Api.Application.Services;
+using iscaslune.Api.Domain.Context;
 using iscaslune.Api.Dtos.Categorias;
 using iscaslune.Api.Dtos.Produtos;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace iscaslune.Api.Controllers;
 
@@ -14,10 +18,12 @@ public class ProdutoController
     : ControllerBaseIscasLune
 {
     private readonly IProdutoService _produtoService;
+    private readonly IscasLuneContext _context;
 
-    public ProdutoController(IProdutoService produtoService, IDiscordNotification discordNotification) : base(discordNotification)
+    public ProdutoController(IProdutoService produtoService, IDiscordNotification discordNotification, IscasLuneContext context) : base(discordNotification)
     {
         _produtoService = produtoService;
+        _context = context;
     }
 
     [HttpPost("create")]
@@ -32,6 +38,20 @@ public class ProdutoController
         {
             return await HandleError(ex.Message);
         }
+    }
+
+    [HttpPut("edit")]
+    public async Task<IActionResult> EditFotoProduto(EditFotoProduto editFotoProduto)
+    {
+        var produto = await _context.Produtos.FirstOrDefaultAsync(x => x.Id == editFotoProduto.Id);
+
+        if (produto is null) return BadRequest();
+
+        produto.Foto = Encoding.UTF8.GetBytes(editFotoProduto.Foto);
+
+        _context.Update(produto);
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 
     [EnableCors("iscasluneorigin")]
@@ -51,11 +71,11 @@ public class ProdutoController
 
     [HttpGet("list")]
     [EnableCors("iscasluneorigin")]
-    public async Task<IActionResult> ListProdutos([FromQuery] PaginacaoProdutoDto paginacaoProdutoDto)
+    public async Task<IActionResult> ListProdutos([FromQuery] int page)
     {
         try
         {
-            var result = await _produtoService.GetProdutosAsync(paginacaoProdutoDto);
+            var result = await _produtoService.GetProdutosAsync(page);
             return HandleGet(result);
         }
         catch (Exception ex)

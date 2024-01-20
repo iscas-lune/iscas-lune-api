@@ -4,6 +4,7 @@ using iscaslune.Api.Domain.Entities;
 using iscaslune.Api.Dtos.Produtos;
 using iscaslune.Api.Infrastructure.Filtros.Filtros;
 using iscaslune.Api.Infrastructure.Interfaces;
+using iTextSharp.text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Diagnostics;
@@ -58,13 +59,19 @@ public class ProdutoRepository
         return produto;
     }
 
-    public async Task<List<Produto>?> GetProdutosAsync(PaginacaoProdutoDto paginacaoProduto)
+    public async Task<(List<Produto>? produtos, int totalPage)> GetProdutosAsync(int page)
     {
+        var newPage = page - 1;
+        var take = 10;
+        var count = await _context.Produtos.CountAsync();
+        var totalPages = (int)Math.Ceiling((decimal)count / 10);
         var produtos = await _context
             .Produtos
             .AsNoTracking()
             .AsQueryable()
             .Include(x => x.Categoria)
+            .Skip(newPage * take)
+            .Take(take)
             .ToListAsync();
 
         var tamanhos = await _tamanhoRepository.GetTamanhosProdutosAsync() ?? new();
@@ -77,7 +84,7 @@ public class ProdutoRepository
                 produto.Categoria.Produtos = new();
                 produto.Tamanhos = tamanhos
                     .Where(x => x.ProdutoId == produto.Id)
-                    .Select(tm => 
+                    .Select(tm =>
                         new Tamanho(tm.Tamanho.Id, tm.Tamanho.DataCriacao, tm.Tamanho.DataAtualizacao, tm.Tamanho.Numero, tm.Tamanho.Descricao)
                         {
                             PrecoProduto = precosProdutos.FirstOrDefault(pr => pr.TamanhoId == tm.Tamanho.Id)
@@ -87,7 +94,7 @@ public class ProdutoRepository
             });
         }
 
-        return produtos;
+        return (produtos, totalPages);
     }
 
     public async Task<List<Produto>> GetProdutosByCarrinhoAsync(List<Guid> produtosIds)

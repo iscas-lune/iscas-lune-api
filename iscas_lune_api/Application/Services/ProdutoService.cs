@@ -1,4 +1,5 @@
-﻿using iscaslune.Api.Application.Interfaces;
+﻿using iscas_lune_api.Model.Produtos;
+using iscaslune.Api.Application.Interfaces;
 using iscaslune.Api.Dtos.Produtos;
 using iscaslune.Api.Infrastructure.Interfaces;
 using iscaslune.Api.Model.Produtos;
@@ -29,10 +30,16 @@ public class ProdutoService
         return new ProdutoViewModel().ForModel(produto);
     }
 
-    public async Task<List<ProdutoViewModel>?> GetProdutosAsync(PaginacaoProdutoDto paginacaoProdutoDto)
+    public async Task<PaginacaoProduto> GetProdutosAsync(int page)
     {
-        var produtos = await _produtoRepository.GetProdutosAsync(paginacaoProdutoDto);
-        return produtos?.Select(x => new ProdutoViewModel().ForModel(x) ?? new()).ToList();
+        var paginacao = await _produtoRepository.GetProdutosAsync(page);
+
+        return new PaginacaoProduto()
+        {
+            Produtos = paginacao.produtos?.Select(x => new ProdutoViewModel().ForModel(x) ?? new()).ToList(),
+            TotalPage = paginacao.totalPage
+        };
+
     }
 
     public async Task<List<ProdutoViewModel>?> GetProdutosByCategoriaAsync(Guid categoriaId)
