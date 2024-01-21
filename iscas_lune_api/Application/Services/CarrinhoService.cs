@@ -106,7 +106,7 @@ public class CarrinhoService : ICarrinhoService
                 }
                 else
                 {
-                    tamanho.Quantidade += tamanho.Quantidade;
+                    tamanho.Quantidade += tamanhoCarrinho.Quantidade;
                 }
             }
         }

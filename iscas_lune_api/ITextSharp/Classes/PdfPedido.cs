@@ -47,7 +47,7 @@ public class PdfPedido : IPdfPedido
             };
 
             var font = FontFactory.GetFont(FontFactory.HELVETICA, 8);
-            var fontCabecalho = FontFactory.GetFont(FontFactory.HELVETICA, 12);
+            var fontCabecalho = FontFactory.GetFont(FontFactory.HELVETICA, 10);
             float border = 0.5f;
 
             var document = new Document(PageSize.A4);
@@ -57,14 +57,21 @@ public class PdfPedido : IPdfPedido
 
             var tableEmpresa = new PdfPTable(1)
             {
-                PaddingTop = 0
+                PaddingTop = 0,
             };
             tableEmpresa.DefaultCell.FixedHeight = 100;
             tableEmpresa.WidthPercentage = 100;
 
-            var cellEmpresa = new PdfPCell(new Phrase($" \n Iscas Lune \n\n\n\n\n Pedido - {pedido.Numero} \n ", fontCabecalho))
+            var cellEmpresa = new PdfPCell(new Phrase($" \n Iscas Lune \n\n\n\n Pedido - {pedido.Numero} \n ", fontCabecalho))
             {
-                HorizontalAlignment = Element.ALIGN_LEFT
+                HorizontalAlignment = Element.ALIGN_LEFT,
+                BorderWidth = 0,
+                BorderWidthBottom = border
+            };
+
+            var cellFake = new PdfPCell()
+            {
+                BorderWidth = 0,
             };
 
             tableEmpresa.AddCell(cellEmpresa);
@@ -73,8 +80,12 @@ public class PdfPedido : IPdfPedido
             tableContato.DefaultCell.FixedHeight = 20;
             tableContato.WidthPercentage = 100;
 
-            var dadosUsuario = $" Cliente : {pedido.Usuario.Nome} \n E-mail : {pedido.Usuario.Email}\n Telefone : {pedido.Usuario.Telefone ?? "N/A"}\n CNPJ : {pedido.Usuario.Cnpj ?? "Sem CNPJ"}";
-            var cellCliente = new PdfPCell(new Phrase(dadosUsuario, fontCabecalho));
+            var dadosUsuario = $"\n Cliente : {pedido.Usuario.Nome} \n E-mail : {pedido.Usuario.Email}\n Telefone : {pedido.Usuario.Telefone ?? "N/A"}\n CNPJ : {pedido.Usuario.Cnpj ?? "Sem CNPJ\n\n"}";
+            var cellCliente = new PdfPCell(new Phrase(dadosUsuario, fontCabecalho))
+            {
+                BorderWidth = 0,
+                BorderWidthBottom = border
+            };
             tableContato.AddCell(cellCliente);
 
             var tableCabecalhoProdutos = new PdfPTable(_celulas.Count);
@@ -120,7 +131,7 @@ public class PdfPedido : IPdfPedido
                     var tamanhoPeso = new PdfPCell(new Phrase(tamanhoPesoAtual, font)) { BorderWidth = borderWidth };
                     var quantidade = new PdfPCell(new Phrase(item.Quantidade.ToString(), font)) { BorderWidth = borderWidth };
                     var valorUnitario = new PdfPCell(new Phrase(item.ValorUnitario.ToString("N", formato), font)) { BorderWidth = borderWidth };
-                    var total = new PdfPCell(new Phrase(item.ValorTotal.ToString("N", formato), font)) { BorderWidth = borderWidth };
+                    var total = new PdfPCell(new Phrase($"R$ {item.ValorTotal.ToString("N", formato)}", font)) { BorderWidth = borderWidth };
 
                     tableDadosProdutos.AddCell(refProduto);
                     tableDadosProdutos.AddCell(descricao);
@@ -129,30 +140,6 @@ public class PdfPedido : IPdfPedido
                     tableDadosProdutos.AddCell(valorUnitario);
                     tableDadosProdutos.AddCell(total);
                 }
-                var cellFalse = new PdfPCell() { BorderWidth = borderWidth };
-                tableDadosProdutos.AddCell(cellFalse);
-                tableDadosProdutos.AddCell(cellFalse);
-                tableDadosProdutos.AddCell(cellFalse);
-
-                var subTotalQuantidade = itemGroup.Sum(x => x.Quantidade);
-                var subTotalQuantidadeCell = new PdfPCell(new Phrase(subTotalQuantidade.ToString("N", formato), font))
-                {
-                    BorderWidth = borderWidth,
-                    BorderWidthTop = border,
-                    BorderWidthBottom = border
-                };
-
-                tableDadosProdutos.AddCell(subTotalQuantidadeCell);
-                tableDadosProdutos.AddCell(cellFalse);
-
-                var subTotal = itemGroup.Sum(x => x.ValorTotal);
-                var subTotalCel = new PdfPCell(new Phrase($"Sub total: {subTotal.ToString("N", formato)}", font)) 
-                { 
-                    BorderWidth = borderWidth, 
-                    BorderWidthTop = border, 
-                    BorderWidthBottom = border 
-                };
-                tableDadosProdutos.AddCell(subTotalCel);
             }
 
             tableDadosProdutos.SetWidths(columnWidths);
@@ -160,19 +147,65 @@ public class PdfPedido : IPdfPedido
             var eventHelper = new CustomPageEventHandler();
             writer.PageEvent = eventHelper;
 
-            var tableTotalizacao = new PdfPTable(1);
+            var tableTotalizacao = new PdfPTable(_celulas.Count);
             tableTotalizacao.DefaultCell.FixedHeight = 15;
             tableTotalizacao.WidthPercentage = 100;
             tableTotalizacao.HorizontalAlignment = Element.ALIGN_RIGHT;
 
-            var cellQtdTotal = new PdfPCell(new Phrase($" Total :  {pedido.ValorTotal.ToString("N", formato)}", fontCabecalho))
+            var cellQtdTotal = new PdfPCell(new Phrase($" Total :  R$ {pedido.ValorTotal.ToString("N", formato)}", fontCabecalho))
             {
                 BorderWidth = 0,
-                PaddingRight = 70,
-                HorizontalAlignment = PdfPCell.ALIGN_RIGHT
+                HorizontalAlignment = PdfPCell.ALIGN_LEFT,
+                BorderWidthTop = border,
             };
 
+            tableTotalizacao.AddCell(cellFake);
+            tableTotalizacao.AddCell(cellFake);
+            tableTotalizacao.AddCell(cellFake);
+            tableTotalizacao.AddCell(cellFake);
+            tableTotalizacao.AddCell(cellFake);
+
             tableTotalizacao.AddCell(cellQtdTotal);
+
+            var tableTotalizacaoQuantidade = new PdfPTable(_celulas.Count);
+            tableTotalizacaoQuantidade.DefaultCell.FixedHeight = 15;
+            tableTotalizacaoQuantidade.WidthPercentage = 100;
+            tableTotalizacaoQuantidade.HorizontalAlignment = Element.ALIGN_RIGHT;
+
+            var tamamhosItens = pedido
+                .ItensPedido
+                .OrderBy(x => x.Tamanho?.Numero)
+                .Select(x => x.Tamanho)
+                .ToList()
+                .GroupBy(x => x?.Id);
+
+            foreach (var tamanhoGroup in tamamhosItens)
+            {
+                var itemPedido = pedido
+                    .ItensPedido
+                    .FirstOrDefault(x => x.TamanhoId == tamanhoGroup.Key);
+
+                var totalQuantidade = pedido
+                    .ItensPedido
+                    .Where(x => x.TamanhoId == tamanhoGroup.Key)
+                    .ToList()
+                    .Sum(x => x.Quantidade);
+
+                var cellTamanhoTotal = new PdfPCell(new Phrase($"{itemPedido?.Tamanho?.Descricao} : {totalQuantidade.ToString("N", formato)}", font))
+                {
+                    BorderWidth = 0,
+                    HorizontalAlignment = PdfPCell.ALIGN_LEFT,
+                    BorderWidthTop = border
+                };
+
+                tableTotalizacaoQuantidade.AddCell(cellFake);
+                tableTotalizacaoQuantidade.AddCell(cellFake);
+                tableTotalizacaoQuantidade.AddCell(cellFake);
+                tableTotalizacaoQuantidade.AddCell(cellFake);
+                tableTotalizacaoQuantidade.AddCell(cellFake);
+
+                tableTotalizacaoQuantidade.AddCell(cellTamanhoTotal);
+            }
 
             document.Open();
 
@@ -181,6 +214,7 @@ public class PdfPedido : IPdfPedido
             document.Add(tableCabecalhoProdutos);
             document.Add(tableDadosProdutos);
             document.Add(tableTotalizacao);
+            document.Add(tableTotalizacaoQuantidade);
 
             document.Close();
 
