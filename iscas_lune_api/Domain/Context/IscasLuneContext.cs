@@ -25,6 +25,7 @@ public class IscasLuneContext : DbContext
     public DbSet<Pedido> Pedidos { get; set; }
     public DbSet<ItensPedido> ItensPedidos { get; set; }
     public DbSet<PedidosEmAberto> PedidosEmAberto { get; set; }
+    public DbSet<Funcionario> Funcionarios { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,5 +41,6 @@ public class IscasLuneContext : DbContext
         modelBuilder.ApplyConfiguration(new PrecoProdutoPesoConfiguration());
         modelBuilder.ApplyConfiguration(new PedidoConfiguration());
         modelBuilder.ApplyConfiguration(new ItensPedidoConfiguration());
+        modelBuilder.ApplyConfiguration(new FuncionarioConfiguration());
     }
 }

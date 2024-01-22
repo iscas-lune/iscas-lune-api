@@ -5,6 +5,7 @@ public static class DependencyInjectCors
     public static void InjectCors(this IServiceCollection services)
     {
         var origin = EnvironmentVariable.GetVariable("URL_BASE_FRONT");
+        var originAdmin = EnvironmentVariable.GetVariable("URL_BASE_FRONT_ADMIN");
         services.AddCors(options =>
         {
             options.AddPolicy(name: "iscasluneorigin",
@@ -21,6 +22,14 @@ public static class DependencyInjectCors
                                       .WithMethods("POST", "PUT")
                                       .AllowAnyHeader();
                               });
+
+            options.AddPolicy(name: "iscasluneoriginadmin",
+                                  policy =>
+                                  {
+                                      policy.WithOrigins(originAdmin)
+                                          .AllowAnyMethod()
+                                          .AllowAnyHeader();
+                                  });
         });
     }
 }

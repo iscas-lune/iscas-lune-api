@@ -25,6 +25,7 @@ public class PedidosEmAbertoWorker : BackgroundService
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                Console.WriteLine("Executando worker");
                 using var scoped = _serviceProvider.CreateScope();
                 var pedidosEmAbertoRepository = scoped.ServiceProvider.GetRequiredService<IPedidosEmAbertoRepository>();
 

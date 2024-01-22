@@ -34,5 +34,6 @@ public static class DependencyInjectApplication
         services.AddScoped<ICarrinhoService, CarrinhoService>();
         services.AddScoped<IPedidoService, PedidoService>();
         services.AddScoped<IPdfPedido, PdfPedido>();
+        services.AddScoped<IFuncionarioService, FuncionarioService>();
     }
 }

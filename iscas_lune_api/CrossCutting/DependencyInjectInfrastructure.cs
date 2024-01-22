@@ -23,6 +23,7 @@ public static class DependencyInjectInfrastructure
 
         //services.AddScoped<ProdutoRepository>();
         services.AddScoped<IProdutoRepository, ProdutoRepository>();
+        services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
 
         services.AddScoped<UsuarioRepository>();
         services.AddScoped<IUsuarioRepository, UsuarioCached>();

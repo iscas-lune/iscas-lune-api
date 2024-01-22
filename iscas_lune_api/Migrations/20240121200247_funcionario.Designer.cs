@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using iscaslune.Api.Domain.Context;
@@ -11,9 +12,11 @@ using iscaslune.Api.Domain.Context;
 namespace iscaslune.Api.Migrations
 {
     [DbContext(typeof(IscasLuneContext))]
-    partial class IscasLuneContextModelSnapshot : ModelSnapshot
+    [Migration("20240121200247_funcionario")]
+    partial class funcionario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

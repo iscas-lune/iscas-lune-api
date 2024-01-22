@@ -6,5 +6,6 @@ namespace iscas_lune_api.Application.Interfaces;
 public interface ITokenService
 {
     string GenerateToken(Usuario usuario);
+    string GenerateTokenFuncionario(Funcionario funcionario);
     UsuarioViewModel GetClaims();
 }

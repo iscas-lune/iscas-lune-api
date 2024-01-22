@@ -2,6 +2,7 @@
 using iscas_lune_api.Domain.Entities;
 using iscas_lune_api.Model.Usuarios;
 using iscaslune.Api;
+using iscaslune.Api.Migrations;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -31,6 +32,36 @@ public class TokenService : ITokenService
             new Claim("Email", usuario.Email),
             new Claim("Numero", usuario.Numero.ToString()),
             new Claim("Id", usuario.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
+        var key = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(_key));
+
+        var credenciais = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var expiration = DateTime.UtcNow.AddHours(24);
+
+        var token = new JwtSecurityToken(
+          issuer: _issuer,
+          audience: _audience,
+          claims: claims,
+          expires: expiration,
+          signingCredentials: credenciais);
+
+        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return tokenString;
+    }
+
+    public string GenerateTokenFuncionario(Funcionario funcionario)
+    {
+        var claims = new[]
+        {
+            new Claim("Nome", funcionario.Nome),
+            new Claim("Email", funcionario.Email),
+            new Claim("Numero", funcionario.Numero.ToString()),
+            new Claim("Id", funcionario.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
