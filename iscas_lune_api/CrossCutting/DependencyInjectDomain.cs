@@ -12,5 +12,9 @@ public static class DependencyInjectDomain
         services.AddDbContext<IscasLuneContext>(opt =>
                 opt.UseNpgsql(connectionString,
                 b => b.MigrationsAssembly(typeof(IscasLuneContext).Assembly.FullName)));
+        //var conecctionLegado = "User ID=admin; Password=Mm%B2102; Host=postgres-db; Port=54325; Database=201.182.97.170; Pooling=true;";
+        //services.AddDbContext<IscasLuneContext_legado>(opt =>
+        //        opt.UseNpgsql(conecctionLegado,
+        //        b => b.MigrationsAssembly(typeof(IscasLuneContext).Assembly.FullName)));
     }
 }

@@ -24,5 +24,6 @@ public sealed class Produto : BaseEntity
     public Guid CategoriaId { get; private set; }
     public Categoria Categoria { get; set; } = null!;
     public List<ItensPedido> ItensPedido { get; set; } = new();
+    public List<ItensTabelaDePreco> ItensTabelaDePreco { get; set; } = new();
     public string? Referencia { get; private set; }
 }

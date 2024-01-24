@@ -17,13 +17,11 @@ public class ProdutoRepository
 {
     private readonly IscasLuneContext _context;
     private readonly ITamanhoProdutoRepository _tamanhoRepository;
-    private readonly IPrecoProdutoRepository _precoProdutoRepository;
 
-    public ProdutoRepository(IscasLuneContext context, ITamanhoProdutoRepository tamanhoRepository, IPrecoProdutoRepository precoProdutoRepository) : base(context)
+    public ProdutoRepository(IscasLuneContext context, ITamanhoProdutoRepository tamanhoRepository) : base(context)
     {
         _context = context;
         _tamanhoRepository = tamanhoRepository;
-        _precoProdutoRepository = precoProdutoRepository;
     }
 
     public async Task<Produto?> GetProdutoByIdAsync(Guid id)
@@ -32,9 +30,7 @@ public class ProdutoRepository
             .Produtos
             .Include(x => x.Categoria)
             .Include(x => x.Pesos)
-                .ThenInclude(x => x.PrecoProdutoPeso)
             .Include(x => x.Tamanhos)
-                .ThenInclude(x => x.PrecoProduto)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -43,15 +39,10 @@ public class ProdutoRepository
             produto.Categoria.Produtos = new();
             produto.Pesos.ForEach(peso =>
             {
-                if (peso.PrecoProdutoPeso != null)
-                    peso.PrecoProdutoPeso.Peso = null;
-                peso.Produtos = new();
                 peso.Produtos = new();
             });
             produto.Tamanhos.ForEach(tamanho =>
             {
-                if (tamanho.PrecoProduto != null)
-                    tamanho.PrecoProduto.Tamanho = null;
                 tamanho.Produtos = new();
             });
         }
@@ -76,7 +67,6 @@ public class ProdutoRepository
             .ToListAsync();
 
         var tamanhos = await _tamanhoRepository.GetTamanhosProdutosAsync() ?? new();
-        var precosProdutos = await _precoProdutoRepository.GetPrecosProdutosAsync();
 
         if (produtos.Count > 0)
         {
@@ -85,12 +75,7 @@ public class ProdutoRepository
                 produto.Categoria.Produtos = new();
                 produto.Tamanhos = tamanhos
                     .Where(x => x.ProdutoId == produto.Id)
-                    .Select(tm =>
-                        new Tamanho(tm.Tamanho.Id, tm.Tamanho.DataCriacao, tm.Tamanho.DataAtualizacao, tm.Tamanho.Numero, tm.Tamanho.Descricao)
-                        {
-                            PrecoProduto = precosProdutos.FirstOrDefault(pr => pr.TamanhoId == tm.Tamanho.Id)
-                        }
-                     )
+                    .Select(tm => new Tamanho(tm.Tamanho.Id, tm.Tamanho.DataCriacao, tm.Tamanho.DataAtualizacao, tm.Tamanho.Numero, tm.Tamanho.Descricao))
                     .ToList();
             });
         }
@@ -105,9 +90,7 @@ public class ProdutoRepository
             .AsQueryable()
             .Include(x => x.Categoria)
             .Include(x => x.Pesos)
-                .ThenInclude(x => x.PrecoProdutoPeso)
             .Include(x => x.Tamanhos)
-                .ThenInclude(x => x.PrecoProduto)
             .Where(x => produtosIds.Contains(x.Id))
             .AsNoTracking()
             .ToListAsync();
@@ -117,14 +100,10 @@ public class ProdutoRepository
             produto.Categoria.Produtos = new();
             produto.Pesos.ForEach(peso =>
             {
-                if (peso.PrecoProdutoPeso != null)
-                    peso.PrecoProdutoPeso.Peso = null;
                 peso.Produtos = new();
             });
             produto.Tamanhos.ForEach(tamanho =>
             {
-                if (tamanho.PrecoProduto != null)
-                    tamanho.PrecoProduto.Tamanho = null;
                 tamanho.Produtos = new();
             });
         });

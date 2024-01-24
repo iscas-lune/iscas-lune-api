@@ -1,9 +1,9 @@
-﻿namespace iscas_lune_api.Exceptions;
+﻿using iscaslune.Api.Errors;
+
+namespace iscas_lune_api.Exceptions;
 
 public class ExceptionApi : Exception
 {
-    const string Error = "Ocorreu um erro interno, tente novamente mais tarde!";
-
-    public ExceptionApi(string error = Error) : base(error)
+    public ExceptionApi(string error = ErrorResponseGeneric.Error) : base(error)
     { }
 }

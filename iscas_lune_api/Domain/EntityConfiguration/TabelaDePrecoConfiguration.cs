@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace iscas_lune_api.Domain.EntityConfiguration;
 
-public class PrecoProdutoPesoConfiguration : IEntityTypeConfiguration<PrecoProdutoPeso>
+public class TabelaDePrecoConfiguration : IEntityTypeConfiguration<TabelaDePreco>
 {
-    public void Configure(EntityTypeBuilder<PrecoProdutoPeso> builder)
+    public void Configure(EntityTypeBuilder<TabelaDePreco> builder)
     {
         builder.HasKey(x => x.Id);
         builder.Property(x => x.DataCriacao)
@@ -19,15 +19,13 @@ public class PrecoProdutoPesoConfiguration : IEntityTypeConfiguration<PrecoProdu
             .HasDefaultValueSql("now()");
         builder.Property(x => x.Numero)
             .ValueGeneratedOnAdd();
-        builder.Property(x => x.Preco)
+        builder.Property(x => x.AtivaEcommerce)
+            .IsRequired();
+        builder.Property(x => x.Descricao)
             .IsRequired()
-            .HasPrecision(12, 2);
-        builder.Property(x => x.PrecoCusto)
-            .HasPrecision(12, 2);
-        builder.Property(x => x.PrecoPromocional)
-            .HasPrecision(12, 2);
-        builder.HasOne(x => x.Peso)
-            .WithOne(x => x.PrecoProdutoPeso)
-            .HasForeignKey<PrecoProdutoPeso>(x => x.PesoId);
+            .HasMaxLength(255);
+        builder.HasMany(x => x.ItensTabelaDePreco)
+            .WithOne(x => x.TabelaDePreco)
+            .HasForeignKey(x => x.TabelaDePrecoId);
     }
 }

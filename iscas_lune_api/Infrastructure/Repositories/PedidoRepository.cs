@@ -1,5 +1,6 @@
 ﻿using iscas_lune_api.Domain.Entities;
 using iscas_lune_api.Infrastructure.Interfaces;
+using iscas_lune_api.Model.Paginacao;
 using iscaslune.Api.Domain.Context;
 using iscaslune.Api.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,29 @@ public class PedidoRepository : GenericRepository<Pedido>, IPedidoRepository
     public PedidoRepository(IscasLuneContext context) : base(context)
     {
         _context = context;
+    }
+
+    public async Task<PaginacaoViewModel<Pedido>> GetPaginacaoPedidoAsync(int page)
+    {
+        var take = 10;
+        var count = await _context.Pedidos.CountAsync();
+        var totalPages = (int)Math.Ceiling((decimal)count / take);
+
+        var pedidos = await _context
+            .Pedidos
+            .AsNoTracking()
+            .AsQueryable()
+            .OrderByDescending(x => x.Numero)
+            .Include(x => x.ItensPedido)
+            .Skip(page * take)
+            .Take(take)
+            .ToListAsync();
+
+        return new()
+        {
+            TotalPage = totalPages,
+            Values = pedidos
+        };
     }
 
     public async Task<Pedido?> GetPedidoByIdAsync(Guid id)

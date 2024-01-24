@@ -20,12 +20,12 @@ public class IscasLuneContext : DbContext
     public DbSet<PesosProdutos> PesosProdutos { get; set; }
     public DbSet<TamanhosProdutos> TamanhosProdutos { get; set; }
     public DbSet<Usuario> Usuarios { get; set; }
-    public DbSet<PrecoProduto> PrecosProduto { get; set; }
-    public DbSet<PrecoProdutoPeso> PrecosProdutoPeso { get; set; }
     public DbSet<Pedido> Pedidos { get; set; }
     public DbSet<ItensPedido> ItensPedidos { get; set; }
     public DbSet<PedidosEmAberto> PedidosEmAberto { get; set; }
     public DbSet<Funcionario> Funcionarios { get; set; }
+    public DbSet<TabelaDePreco> TabelaDePreco { get; set; }
+    public DbSet<ItensTabelaDePreco> ItensTabelaDePreco { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -37,10 +37,10 @@ public class IscasLuneContext : DbContext
         modelBuilder.ApplyConfiguration(new TamanhoConfiguration());
         modelBuilder.ApplyConfiguration(new TamanhosProdutosConfiguration());
         modelBuilder.ApplyConfiguration(new UsuarioConfiguration());
-        modelBuilder.ApplyConfiguration(new PrecoProdutoConfiguration());
-        modelBuilder.ApplyConfiguration(new PrecoProdutoPesoConfiguration());
         modelBuilder.ApplyConfiguration(new PedidoConfiguration());
         modelBuilder.ApplyConfiguration(new ItensPedidoConfiguration());
         modelBuilder.ApplyConfiguration(new FuncionarioConfiguration());
+        modelBuilder.ApplyConfiguration(new TabelaDePrecoConfiguration());
+        modelBuilder.ApplyConfiguration(new ItensTabelaDePrecoConfiguration());
     }
 }

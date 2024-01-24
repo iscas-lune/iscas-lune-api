@@ -1,8 +1,10 @@
 ﻿using iscas_lune_api.Application.Interfaces;
 using iscas_lune_api.Domain.Entities;
 using iscas_lune_api.Dtos.Pedidos;
+using iscas_lune_api.Exceptions;
 using iscas_lune_api.Infrastructure.Interfaces;
 using iscas_lune_api.Model.Carrinho;
+using iscas_lune_api.Model.Paginacao;
 using iscas_lune_api.Model.Pedidos;
 using iscaslune.Api.Application.Interfaces;
 
@@ -14,29 +16,48 @@ public class PedidoService : IPedidoService
     private readonly IPedidosEmAbertoRepository _pedidosEmAbertoRepository;
     private readonly ITokenService _tokenService;
     private readonly ICachedService<CarrinhoModel> _cachedService;
+    private readonly ITabelaDePrecoRepository _tabelaDePrecoRepository;
 
-    public PedidoService(IPedidoRepository pedidoRepository, ITokenService tokenService, ICachedService<CarrinhoModel> cachedService, IPedidosEmAbertoRepository pedidosEmAbertoRepository)
+    public PedidoService(
+        IPedidoRepository pedidoRepository, 
+        ITokenService tokenService, 
+        ICachedService<CarrinhoModel> cachedService, 
+        IPedidosEmAbertoRepository pedidosEmAbertoRepository, 
+        ITabelaDePrecoRepository tabelaDePrecoRepository)
     {
         _pedidoRepository = pedidoRepository;
         _tokenService = tokenService;
         _cachedService = cachedService;
         _pedidosEmAbertoRepository = pedidosEmAbertoRepository;
+        _tabelaDePrecoRepository = tabelaDePrecoRepository;
     }
 
     public async Task<(string? error, bool result)> CreatePedidoAsync(PedidoCreateDto pedidoCreateDto)
     {
+        var tabelaDePreco = await _tabelaDePrecoRepository.GetTabelaDePrecoAtivaEcommerceAsync()
+            ?? throw new ExceptionApi("Tabela de preço não localizada!");
+
         var claims = _tokenService.GetClaims();
         var date = DateTime.Now;
         var pedido = new Pedido(Guid.NewGuid(), date, date, 0, StatusPedido.Aberto, claims.Id);
 
         var pedidosPorPeso = pedidoCreateDto.PedidosPorPeso.Select(x =>
         {
-            return new ItensPedido(Guid.NewGuid(), date, date, 0, x.ProdutoId, pedido.Id, x.ValorUnitario, x.Quantidade, x.PesoId, null);
+            var valorUnitario = tabelaDePreco
+                .ItensTabelaDePreco
+                .FirstOrDefault(item => item.ProdutoId == x.ProdutoId && item.PesoId == x.PesoId)?.ValorUnitario ?? 0;
+
+            return new ItensPedido(Guid.NewGuid(), date, date, 0, x.ProdutoId, pedido.Id, valorUnitario, x.Quantidade, x.PesoId, null);
+        
         }).ToList();
 
         var pedidosPorTamanho = pedidoCreateDto.PedidosPorTamanho.Select(x =>
         {
-            return new ItensPedido(Guid.NewGuid(), date, date, 0, x.ProdutoId, pedido.Id, x.ValorUnitario, x.Quantidade, null, x.TamanhoId);
+            var valorUnitario = tabelaDePreco
+                .ItensTabelaDePreco
+                .FirstOrDefault(item => item.ProdutoId == x.ProdutoId && item.TamanhoId == x.TamanhoId)?.ValorUnitario ?? 0;
+
+            return new ItensPedido(Guid.NewGuid(), date, date, 0, x.ProdutoId, pedido.Id, valorUnitario, x.Quantidade, null, x.TamanhoId);
         }).ToList();
 
         pedido.ItensPedido.AddRange(pedidosPorPeso);
@@ -46,7 +67,7 @@ public class PedidoService : IPedidoService
 
         if (!result) return ("Ocorreu um erro interno, tente novamente mais tarde!", false);
         await _cachedService.RemoveCachedAsync($"carrinho-{claims.Id}");
-        var pedidoEmAberto = new PedidosEmAberto() 
+        var pedidoEmAberto = new PedidosEmAberto()
         {
             Id = Guid.NewGuid(),
             PedidoId = pedido.Id,
@@ -55,6 +76,19 @@ public class PedidoService : IPedidoService
         await _pedidosEmAbertoRepository.AddAsync(pedidoEmAberto);
 
         return (null, true);
+    }
+
+    public async Task<PaginacaoViewModel<PedidoViewModel>> GetPaginacaoAsync(int page)
+    {
+        var paginacao = await _pedidoRepository.GetPaginacaoPedidoAsync(page);
+
+        return new()
+        {
+            TotalPage = paginacao.TotalPage,
+            Values = paginacao.Values
+                .Select(x => new PedidoViewModel().ForModel(x) ?? new())
+                .ToList()
+        };
     }
 
     public async Task<List<PedidoViewModel>> GetPedidosUsuario(int statusPedido)
@@ -69,7 +103,7 @@ public class PedidoService : IPedidoService
     {
         var pedido = await _pedidoRepository.GetPedidoByUpdateStatusAsync(updateStatusPedidoDto.PedidoId);
 
-        if(pedido == null) return false;
+        if (pedido == null) return false;
 
         pedido.UpdateStatus(updateStatusPedidoDto.StatusPedido);
 

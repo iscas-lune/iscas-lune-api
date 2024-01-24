@@ -36,10 +36,10 @@ public static class DependencyInjectInfrastructure
         services.AddScoped<ITamanhoProdutoRepository, TamanhosProdutosCached>();
         services.AddScoped<ILoginRepository, LoginRepository>();
 
-        services.AddScoped<PrecoProdutoRepository>();
-        services.AddScoped<IPrecoProdutoRepository, PrecoProdutoCached>();
-
         services.AddScoped<IPedidoRepository, PedidoRepository>();
         services.AddScoped<IPedidosEmAbertoRepository, PedidosEmAbertoRepository>();
+
+        services.AddScoped<TabelaDePrecoRepository>();
+        services.AddScoped<ITabelaDePrecoRepository, TabelaDePrecoCached>();
     }
 }

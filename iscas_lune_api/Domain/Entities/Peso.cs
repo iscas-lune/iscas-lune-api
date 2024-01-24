@@ -11,7 +11,6 @@ public sealed class Peso : BaseEntity
     }
 
     public string Descricao { get; private set; }
-    public PrecoProdutoPeso PrecoProdutoPeso { get; set; } = null!;
     public List<ItensPedido> ItensPedido { get; set; } = new();
     public List<Produto> Produtos { get; set; } = new();
 }

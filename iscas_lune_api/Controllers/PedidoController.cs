@@ -68,4 +68,20 @@ public class PedidoController : ControllerBaseIscasLune
             return await HandleError(ex.Message);
         }
     }
+
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [EnableCors("iscasluneoriginadmin")]
+    [HttpGet("paginacao")]
+    public async Task<IActionResult> Paginacao([FromQuery] int page)
+    {
+        try
+        {
+            var paginacaoViewModel = await _pedidoService.GetPaginacaoAsync(page);
+            return Ok(paginacaoViewModel);
+        }
+        catch (Exception ex)
+        {
+            return await HandleError(ex.Message);
+        }
+    }
 }

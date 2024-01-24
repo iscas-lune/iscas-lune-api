@@ -11,7 +11,6 @@ public sealed class Tamanho: BaseEntity
     }
 
     public string Descricao { get; private set; }
-    public PrecoProduto PrecoProduto { get; set; } = null!;
     public List<ItensPedido> ItensPedido { get; set; } = new();
     public List<Produto> Produtos { get; set; } = new();
 }

@@ -1,7 +1,6 @@
 ﻿using iscas_lune_api.Application.Interfaces;
 using iscas_lune_api.Dtos.Carrinhos;
 using iscas_lune_api.Model.Carrinho;
-using iscas_lune_api.Model.PrecosProdutos;
 using iscaslune.Api.Infrastructure.Interfaces;
 using iscaslune.Api.Model.Categorias;
 using iscaslune.Api.Model.Cores;
@@ -155,16 +154,12 @@ public class CarrinhoService : ICarrinhoService
                 Id = x.Id,
                 Descricao = x.Descricao,
                 Numero = x.Numero,
-                PrecoProduto = new PrecoProdutoCarrinhoViewModel()
+                PrecoProduto = new QuantidadeProdutoCarrinhoViewModel()
                 {
-                    Id = x.PrecoProduto.Id,
-                    Preco = x.PrecoProduto.Preco,
-                    PrecoCusto = x.PrecoProduto.PrecoCusto,
-                    PrecoPromocional = x.PrecoProduto.PrecoPromocional,
                     Quantidade = (decimal)(carrinho?
                         .Produtos?
                         .FirstOrDefault(pr => pr.ProdutoId == produto.Id)?
-                            .Tamanhos.FirstOrDefault(tm => tm.TamanhoId == x.Id)?
+                            .Tamanhos.FirstOrDefault(ps => ps.TamanhoId == x.Id)?
                                 .Quantidade ?? 0)
                 }
             }).ToList();
@@ -174,12 +169,8 @@ public class CarrinhoService : ICarrinhoService
                 Id = x.Id,
                 Descricao = x.Descricao,
                 Numero = x.Numero,
-                PrecoProduto = new PrecoProdutoCarrinhoViewModel()
+                PrecoProduto = new QuantidadeProdutoCarrinhoViewModel()
                 {
-                    Preco = x.PrecoProdutoPeso.Preco,
-                    Id = x.PrecoProdutoPeso.Id,
-                    PrecoCusto = x.PrecoProdutoPeso.PrecoCusto,
-                    PrecoPromocional = x.PrecoProdutoPeso.PrecoPromocional,
                     Quantidade = (decimal)(carrinho?
                         .Produtos?
                         .FirstOrDefault(pr => pr.ProdutoId == produto.Id)?

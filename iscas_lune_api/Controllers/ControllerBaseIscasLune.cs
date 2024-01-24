@@ -10,7 +10,7 @@ public abstract class ControllerBaseIscasLune : ControllerBase
 {
     private readonly IDiscordNotification _discordNotification;
     private readonly string _ambiente = EnvironmentVariable.GetVariable("AMBIENTE");
-    private readonly ErrorResponseGeneric _error = new();
+    private readonly object _error = new { message = ErrorResponseGeneric.Error };
 
     protected ControllerBaseIscasLune(IDiscordNotification discordNotification)
     {
