@@ -18,7 +18,7 @@ public static class DependencyInjectApplication
         });
 
         services.AddScoped(typeof(ICachedService<>), typeof(CachedService<>));
-        services.AddScoped<ICorService, CorService>();
+        services.AddScoped<IPesoService, PesoService>();
         services.AddScoped<ITamanhoService, TamanhoService>();
         services.AddScoped<ICategoriaService, CategoriaService>();
         services.AddScoped<IBannerService, BannerService>();

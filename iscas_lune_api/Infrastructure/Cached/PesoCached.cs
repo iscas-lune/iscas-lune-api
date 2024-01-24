@@ -8,45 +8,45 @@ using iscaslune.Api.Infrastructure.Repositories;
 
 namespace iscaslune.Api.Infrastructure.Cached;
 
-public class CorCached
-    : GenericRepository<Peso>, ICorRepository
+public class PesoCached
+    : GenericRepository<Peso>, IPesoRepository
 {
     private readonly ICachedService<Peso> _cachedService;
-    private readonly CorRepository _corRepository;
+    private readonly PesoRepository _corRepository;
     private const string _keyList = "cores";
 
-    public CorCached(IscasLuneContext context, ICachedService<Peso> cachedService, CorRepository corRepository) : base(context)
+    public PesoCached(IscasLuneContext context, ICachedService<Peso> cachedService, PesoRepository corRepository) : base(context)
     {
         _cachedService = cachedService;
         _corRepository = corRepository;
     }
 
-    public async Task<Peso?> GetCorByIdAsync(Guid id)
+    public async Task<Peso?> GetPesoByIdAsync(Guid id)
     {
         var key = id.ToString();
         var cor = await _cachedService.GetItemAsync(key);
 
         if (cor == null)
         {
-            cor = await _corRepository.GetCorByIdAsync(id);
+            cor = await _corRepository.GetPesoByIdAsync(id);
             if(cor != null) await _cachedService.SetItemAsync(key, cor);
         }
 
         return cor;
     }
 
-    public async Task<List<Peso>> GetCoresAsync(PaginacaoPesoDto filterModel)
+    public async Task<List<Peso>> GetPesosAsync(PaginacaoPesoDto filterModel)
     {
         if(!string.IsNullOrWhiteSpace(filterModel.Descricao) 
             || !filterModel.OrderBy.Equals("DataCriacao") 
             || filterModel.Asc)
-            return await _corRepository.GetCoresAsync(filterModel);
+            return await _corRepository.GetPesosAsync(filterModel);
 
         var cores = await _cachedService.GetListItemAsync(_keyList);
 
         if(cores == null || cores.Count == 0)
         {
-            cores = await _corRepository.GetCoresAsync(filterModel);
+            cores = await _corRepository.GetPesosAsync(filterModel);
             if (cores.Count > 0) await _cachedService.SetListItemAsync(_keyList, cores);
         }
 

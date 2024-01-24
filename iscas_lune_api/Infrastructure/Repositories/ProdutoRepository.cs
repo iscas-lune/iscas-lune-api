@@ -1,4 +1,5 @@
-﻿using iscas_lune_api.Infrastructure.Interfaces;
+﻿using iscas_lune_api.Infrastructure.Filtros.Filtros;
+using iscas_lune_api.Infrastructure.Interfaces;
 using iscaslune.Api.Domain.Context;
 using iscaslune.Api.Domain.Entities;
 using iscaslune.Api.Dtos.Produtos;
@@ -17,6 +18,8 @@ public class ProdutoRepository
 {
     private readonly IscasLuneContext _context;
     private readonly ITamanhoProdutoRepository _tamanhoRepository;
+    private static readonly int _take = 5;
+
 
     public ProdutoRepository(IscasLuneContext context, ITamanhoProdutoRepository tamanhoRepository) : base(context)
     {
@@ -52,18 +55,21 @@ public class ProdutoRepository
 
     public async Task<(List<Produto>? produtos, int totalPage)> GetProdutosAsync(int page)
     {
-        var newPage = page - 1;
-        var take = 5;
-        var count = await _context.Produtos.CountAsync();
-        var totalPages = (int)Math.Ceiling((decimal)count / take);
+        var newPage = page == 0 ? page : page - 1;
+
+        var totalPages = await _context
+            .Produtos
+            .AsQueryable()
+            .TotalPage(_take);
+
         var produtos = await _context
             .Produtos
             .AsNoTracking()
             .AsQueryable()
             .OrderBy(x => x.Numero)
             .Include(x => x.Categoria)
-            .Skip(newPage * take)
-            .Take(take)
+            .Skip(newPage * _take)
+            .Take(_take)
             .ToListAsync();
 
         var tamanhos = await _tamanhoRepository.GetTamanhosProdutosAsync() ?? new();
@@ -117,6 +123,7 @@ public class ProdutoRepository
             .Produtos
             .AsNoTracking()
             .AsQueryable()
+            .OrderBy(x => x.Numero)
             .Include(x => x.Categoria)
             .Where(x => x.CategoriaId == categoriaId)
             .ToListAsync();
@@ -138,5 +145,13 @@ public class ProdutoRepository
         }
 
         return produtos;
+    }
+
+    public async Task<int> GetTotalPageProdutosAsync()
+    {
+        return await _context
+            .Produtos
+            .AsQueryable()
+            .TotalPage(_take);
     }
 }

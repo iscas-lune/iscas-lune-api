@@ -2,6 +2,7 @@
 using iscaslune.Api.Model.Base;
 using iscaslune.Api.Model.Produtos;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace iscaslune.Api.Model.Categorias;
 

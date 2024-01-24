@@ -4,6 +4,7 @@ using iscaslune.Api.Model.Categorias;
 using iscaslune.Api.Model.Cores;
 using iscaslune.Api.Model.Tamanhos;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace iscaslune.Api.Model.Produtos;
 

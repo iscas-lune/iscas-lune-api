@@ -8,6 +8,7 @@ using iscaslune.Api.Dtos.Produtos;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Text;
 
 namespace iscaslune.Api.Controllers;
@@ -75,7 +76,12 @@ public class ProdutoController
     {
         try
         {
+            var stop = new Stopwatch();
+            stop.Start();
             var result = await _produtoService.GetProdutosAsync(page);
+            stop.Stop();
+            Console.WriteLine($"Tempo : {stop.ElapsedMilliseconds}");
+            
             return HandleGet(result);
         }
         catch (Exception ex)

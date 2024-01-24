@@ -22,13 +22,13 @@ public class CategoriaCached
 
     public async Task<Categoria?> GetCategoriaByIdAsync(Guid id)
     {
-        var key = id.ToString();
+        var key = $"categoria-{id}";
         var categoria = await _cachedService.GetItemAsync(key);
 
-        if(categoria == null)
+        if (categoria == null)
         {
             categoria = await _categoriaRepository.GetCategoriaByIdAsync(id);
-            if(categoria != null)
+            if (categoria != null)
             {
                 categoria.Produtos.ForEach(x =>
                 {
@@ -50,11 +50,11 @@ public class CategoriaCached
 
         var categorias = await _cachedService.GetListItemAsync(_keyList);
 
-        if(categorias == null)
+        if (categorias == null)
         {
             categorias = await _categoriaRepository.GetCategoriasAsync(paginacaoCategoriaDto);
 
-            if(categorias != null && categorias.Count > 0)
+            if (categorias != null && categorias.Count > 0)
             {
                 categorias.ForEach(categoria =>
                 {
@@ -65,7 +65,7 @@ public class CategoriaCached
                 });
                 await _cachedService.SetListItemAsync(_keyList, categorias);
             }
-                
+
         }
 
         return categorias;

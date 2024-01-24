@@ -5,20 +5,20 @@ using iscaslune.Api.Model.Cores;
 
 namespace iscaslune.Api.Application.Services;
 
-public class CorService
-    : ICorService
+public class PesoService
+    : IPesoService
 {
-    private readonly ICorRepository _corRepository;
+    private readonly IPesoRepository _pesoRepository;
 
-    public CorService(ICorRepository corRepository)
+    public PesoService(IPesoRepository pesoRepository)
     {
-        _corRepository = corRepository;
+        _pesoRepository = pesoRepository;
     }
 
     public async Task<PesoViewModel?> CreateCorAsync(CreatePesoDto createCorDto)
     {
         var cor = createCorDto.ForEntity();
-        var result = await _corRepository.AddAsync(cor);
+        var result = await _pesoRepository.AddAsync(cor);
 
         if(!result) return null;
 
@@ -27,13 +27,13 @@ public class CorService
 
     public async Task<PesoViewModel?> GetCorByIdAsync(Guid id)
     {
-        var cor = await _corRepository.GetCorByIdAsync(id);
+        var cor = await _pesoRepository.GetPesoByIdAsync(id);
         return new PesoViewModel().ForModel(cor);
     }
 
     public async Task<List<PesoViewModel>?> GetCoresAsync(PaginacaoPesoDto paginacaoCorDto)
     {
-        var cores = await _corRepository.GetCoresAsync(paginacaoCorDto);
+        var cores = await _pesoRepository.GetPesosAsync(paginacaoCorDto);
         return cores?.Select(x => new PesoViewModel().ForModel(x) ?? new()).ToList();
     }
 }

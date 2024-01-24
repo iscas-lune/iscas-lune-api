@@ -20,7 +20,7 @@ public class CachedService<T> : ICachedService<T> where T : class
         _serializerOptions = new()
         {
             PropertyNameCaseInsensitive = true,
-            ReferenceHandler = ReferenceHandler.Preserve,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             WriteIndented = true
         };
         _options = new DistributedCacheEntryOptions()
@@ -53,14 +53,14 @@ public class CachedService<T> : ICachedService<T> where T : class
     public async Task SetItemAsync(string key, T item)
     {
         Valid.ValidStringSemLength(key);
-        var valueJson = JsonSerializer.Serialize<T>(item);
+        var valueJson = JsonSerializer.Serialize<T>(item, options: _serializerOptions);
         await _distributedCache.SetStringAsync(key, valueJson, _options);
     }
 
     public async Task SetListItemAsync(string key, List<T> itens)
     {
         Valid.ValidStringSemLength(key);
-        var valuesJson = JsonSerializer.Serialize<List<T>>(itens);
+        var valuesJson = JsonSerializer.Serialize<List<T>>(itens, options: _serializerOptions);
         await _distributedCache.SetStringAsync(key, valuesJson, _options);
     }
 }

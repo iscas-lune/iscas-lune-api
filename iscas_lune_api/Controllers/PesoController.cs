@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace iscaslune.Api.Controllers;
 
-[Route("api/cor")]
-public class CorController : ControllerBaseIscasLune
+[Route("api/peso")]
+public class PesoController : ControllerBaseIscasLune
 {
-    private readonly ICorService _corService;
+    private readonly IPesoService _pesoService;
 
-    public CorController(ICorService corService, IDiscordNotification discordNotification) : base(discordNotification)
+    public PesoController(IDiscordNotification discordNotification, IPesoService pesoService) : base(discordNotification)
     {
-        _corService = corService;
+        _pesoService = pesoService;
     }
 
     [HttpPost("create")]
@@ -21,7 +21,7 @@ public class CorController : ControllerBaseIscasLune
     {
         try
         {
-            var result = await _corService.CreateCorAsync(createCorDto);
+            var result = await _pesoService.CreateCorAsync(createCorDto);
             return HandleCreated(result, $"api/cor/get?id={result?.Id}");
         }
         catch (Exception ex)
@@ -35,7 +35,7 @@ public class CorController : ControllerBaseIscasLune
     {
         try
         {
-            var corViewmodel = await _corService.GetCorByIdAsync(id);
+            var corViewmodel = await _pesoService.GetCorByIdAsync(id);
             return HandleGet(corViewmodel);
         }
         catch (Exception ex)
@@ -49,7 +49,7 @@ public class CorController : ControllerBaseIscasLune
     {
         try
         {
-            var cores = await _corService.GetCoresAsync(paginacaoCorDto);
+            var cores = await _pesoService.GetCoresAsync(paginacaoCorDto);
             return HandleGet(cores);
         }
         catch (Exception ex)

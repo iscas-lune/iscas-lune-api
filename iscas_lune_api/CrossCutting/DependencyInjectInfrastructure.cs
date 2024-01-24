@@ -12,8 +12,8 @@ public static class DependencyInjectInfrastructure
     public static void InjectInfrastructure(this IServiceCollection services)
     {
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-        services.AddScoped<CorRepository>();
-        services.AddScoped<ICorRepository, CorCached>();
+        services.AddScoped<PesoRepository>();
+        services.AddScoped<IPesoRepository, PesoCached>();
 
         services.AddScoped<TamanhoRepository>();
         services.AddScoped<ITamanhoRepository, TamanhoCached>();
@@ -21,8 +21,9 @@ public static class DependencyInjectInfrastructure
         services.AddScoped<CategoriaRepository>();
         services.AddScoped<ICategoriaRepository, CategoriaCached>();
 
-        //services.AddScoped<ProdutoRepository>();
-        services.AddScoped<IProdutoRepository, ProdutoRepository>();
+        services.AddScoped<ProdutoRepository>();
+        services.AddScoped<IProdutoRepository, ProdutoCached>();
+        
         services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
 
         services.AddScoped<UsuarioRepository>();

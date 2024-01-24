@@ -3,7 +3,7 @@ using iscaslune.Api.Model.Cores;
 
 namespace iscaslune.Api.Application.Interfaces;
 
-public interface ICorService
+public interface IPesoService
 {
     Task<PesoViewModel?> CreateCorAsync(CreatePesoDto createCorDto);
     Task<PesoViewModel?> GetCorByIdAsync(Guid id);
