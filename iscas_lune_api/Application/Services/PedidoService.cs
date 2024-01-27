@@ -13,67 +13,33 @@ namespace iscas_lune_api.Application.Services;
 public class PedidoService : IPedidoService
 {
     private readonly IPedidoRepository _pedidoRepository;
-    private readonly IPedidosEmAbertoRepository _pedidosEmAbertoRepository;
     private readonly ITokenService _tokenService;
-    private readonly ICachedService<CarrinhoModel> _cachedService;
-    private readonly ITabelaDePrecoRepository _tabelaDePrecoRepository;
+    private readonly IProcessarPedidoService _processarPedidoService;
 
     public PedidoService(
-        IPedidoRepository pedidoRepository, 
-        ITokenService tokenService, 
-        ICachedService<CarrinhoModel> cachedService, 
-        IPedidosEmAbertoRepository pedidosEmAbertoRepository, 
-        ITabelaDePrecoRepository tabelaDePrecoRepository)
+        IPedidoRepository pedidoRepository,
+        ITokenService tokenService,
+        IProcessarPedidoService processarPedidoService)
     {
         _pedidoRepository = pedidoRepository;
         _tokenService = tokenService;
-        _cachedService = cachedService;
-        _pedidosEmAbertoRepository = pedidosEmAbertoRepository;
-        _tabelaDePrecoRepository = tabelaDePrecoRepository;
+        _processarPedidoService = processarPedidoService;
     }
 
     public async Task<(string? error, bool result)> CreatePedidoAsync(PedidoCreateDto pedidoCreateDto)
     {
-        var tabelaDePreco = await _tabelaDePrecoRepository.GetTabelaDePrecoAtivaEcommerceAsync()
-            ?? throw new ExceptionApi("Tabela de preço não localizada!");
+        if (pedidoCreateDto.PedidosPorPeso.Count == 0 && pedidoCreateDto.PedidosPorTamanho.Count == 0)
+            throw new ExceptionApi("Informe os produtos");
 
         var claims = _tokenService.GetClaims();
         var date = DateTime.Now;
         var pedido = new Pedido(Guid.NewGuid(), date, date, 0, StatusPedido.Aberto, claims.Id);
 
-        var pedidosPorPeso = pedidoCreateDto.PedidosPorPeso.Select(x =>
-        {
-            var valorUnitario = tabelaDePreco
-                .ItensTabelaDePreco
-                .FirstOrDefault(item => item.ProdutoId == x.ProdutoId && item.PesoId == x.PesoId)?.ValorUnitario ?? 0;
-
-            return new ItensPedido(Guid.NewGuid(), date, date, 0, x.ProdutoId, pedido.Id, valorUnitario, x.Quantidade, x.PesoId, null);
-        
-        }).ToList();
-
-        var pedidosPorTamanho = pedidoCreateDto.PedidosPorTamanho.Select(x =>
-        {
-            var valorUnitario = tabelaDePreco
-                .ItensTabelaDePreco
-                .FirstOrDefault(item => item.ProdutoId == x.ProdutoId && item.TamanhoId == x.TamanhoId)?.ValorUnitario ?? 0;
-
-            return new ItensPedido(Guid.NewGuid(), date, date, 0, x.ProdutoId, pedido.Id, valorUnitario, x.Quantidade, null, x.TamanhoId);
-        }).ToList();
-
-        pedido.ItensPedido.AddRange(pedidosPorPeso);
-        pedido.ItensPedido.AddRange(pedidosPorTamanho);
+        pedido = await _processarPedidoService.ProcessarAsync(pedido, pedidoCreateDto);
 
         var result = await _pedidoRepository.AddAsync(pedido);
 
         if (!result) return ("Ocorreu um erro interno, tente novamente mais tarde!", false);
-        await _cachedService.RemoveCachedAsync($"carrinho-{claims.Id}");
-        var pedidoEmAberto = new PedidosEmAberto()
-        {
-            Id = Guid.NewGuid(),
-            PedidoId = pedido.Id,
-        };
-
-        await _pedidosEmAbertoRepository.AddAsync(pedidoEmAberto);
 
         return (null, true);
     }

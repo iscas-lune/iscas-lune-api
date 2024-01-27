@@ -36,5 +36,6 @@ public static class DependencyInjectApplication
         services.AddScoped<IPdfPedido, PdfPedido>();
         services.AddScoped<IFuncionarioService, FuncionarioService>();
         services.AddScoped<IItensPedidoService, ItensPedidoService>();
+        services.AddScoped<IProcessarPedidoService, ProcessarPedidoService>();
     }
 }
