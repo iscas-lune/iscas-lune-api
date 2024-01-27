@@ -1,6 +1,7 @@
 ﻿using iscas_lune_api.Domain.Entities;
 using iscas_lune_api.Infrastructure.Interfaces;
 using iscas_lune_api.Model.Paginacao;
+using iscas_lune_api.Model.Pedidos;
 using iscaslune.Api.Domain.Context;
 using iscaslune.Api.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -57,19 +58,20 @@ public class PedidoRepository : GenericRepository<Pedido>, IPedidoRepository
         return await _context.Pedidos.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<List<Pedido>?> GetPedidosByUsuarioIdAsync(Guid usuarioId, int statusPedido)
+    public async Task<List<PedidoViewModelSemItens>> GetPedidosByUsuarioIdAsync(Guid usuarioId, int statusPedido)
     {
         return await _context.Pedidos
             .AsNoTracking()
             .OrderByDescending(x => x.Numero)
             .AsQueryable()
-            .Include(x => x.ItensPedido)
-                .ThenInclude(x => x.Produto)
-            .Include(x => x.ItensPedido)
-                .ThenInclude(x => x.Tamanho)
-            .Include(x => x.ItensPedido)
-                .ThenInclude(x => x.Peso)
             .Where(x => x.UsuarioId == usuarioId && x.StatusPedido == (StatusPedido)statusPedido)
+            .Select(pedido => new PedidoViewModelSemItens()
+            {
+                Numero = pedido.Numero,
+                DataCriacao = pedido.DataCriacao,
+                Id = pedido.Id,
+                StatusPedido = pedido.StatusPedido
+            })
             .ToListAsync();
     }
 }

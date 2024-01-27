@@ -7,7 +7,7 @@ namespace iscas_lune_api.Application.Interfaces;
 public interface IPedidoService
 {
     Task<(string? error, bool result)> CreatePedidoAsync(PedidoCreateDto pedidoCreateDto);
-    Task<List<PedidoViewModel>> GetPedidosUsuario(int statusPedido);
+    Task<List<PedidoViewModelSemItens>> GetPedidosUsuarioAsync(int statusPedido);
     Task<bool> UpdateStatusPedidoAsync(UpdateStatusPedidoDto updateStatusPedidoDto);
     Task<PaginacaoViewModel<PedidoViewModel>> GetPaginacaoAsync(int page);
 }

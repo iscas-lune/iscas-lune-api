@@ -60,7 +60,7 @@ public class PedidoController : ControllerBaseIscasLune
     {
         try
         {
-            var pedidos = await _pedidoService.GetPedidosUsuario(statusPedido);
+            var pedidos = await _pedidoService.GetPedidosUsuarioAsync(statusPedido);
             return Ok(pedidos);
         }
         catch (Exception ex)

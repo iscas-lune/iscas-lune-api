@@ -91,12 +91,10 @@ public class PedidoService : IPedidoService
         };
     }
 
-    public async Task<List<PedidoViewModel>> GetPedidosUsuario(int statusPedido)
+    public async Task<List<PedidoViewModelSemItens>> GetPedidosUsuarioAsync(int statusPedido)
     {
         var claims = _tokenService.GetClaims();
-        var pedidos = await _pedidoRepository.GetPedidosByUsuarioIdAsync(claims.Id, statusPedido);
-
-        return pedidos?.Select(x => new PedidoViewModel().ForModel(x) ?? new()).ToList() ?? new();
+        return await _pedidoRepository.GetPedidosByUsuarioIdAsync(claims.Id, statusPedido);
     }
 
     public async Task<bool> UpdateStatusPedidoAsync(UpdateStatusPedidoDto updateStatusPedidoDto)
