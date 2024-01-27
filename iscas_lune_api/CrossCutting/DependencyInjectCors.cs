@@ -15,6 +15,13 @@ public static class DependencyInjectCors
                                       .WithMethods("GET")
                                       .AllowAnyHeader();
                               });
+            options.AddPolicy(name: "iscasluneoriginwithdelte",
+                              policy =>
+                              {
+                                  policy.WithOrigins(origin)
+                                      .WithMethods("DELETE")
+                                      .AllowAnyHeader();
+                              });
             options.AddPolicy(name: "iscasluneoriginwithpost",
                               policy =>
                               {

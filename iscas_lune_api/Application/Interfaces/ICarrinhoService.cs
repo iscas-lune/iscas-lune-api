@@ -9,4 +9,5 @@ public interface ICarrinhoService
     Task<bool> AdicionarProdutoAsync(AddCarrinhoDto addCarrinhoDto);
     Task<List<CarrinhoViewModel>> GetCarrinhoAsync();
     Task<int> GetCountCarrinhoAsync();
+    Task<bool> DeleteProdutoCarrinhoAsync(Guid produtoId);
 }

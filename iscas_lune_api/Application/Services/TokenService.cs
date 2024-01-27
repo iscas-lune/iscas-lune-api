@@ -1,5 +1,6 @@
 ﻿using iscas_lune_api.Application.Interfaces;
 using iscas_lune_api.Domain.Entities;
+using iscas_lune_api.Exceptions;
 using iscas_lune_api.Model.Usuarios;
 using iscaslune.Api;
 using iscaslune.Api.Migrations;
@@ -87,16 +88,16 @@ public class TokenService : ITokenService
     public UsuarioViewModel GetClaims()
     {
         if (_httpContextAccessor?.HttpContext?.User.Identity is not ClaimsIdentity claimsIdentity || !claimsIdentity.Claims.Any())
-            throw new ArgumentNullException(nameof(claimsIdentity));
+            throw new ExceptionApi(nameof(claimsIdentity));
 
         var id = claimsIdentity.Claims.FirstOrDefault(c => c.Type == "Id")?.Value
-            ?? throw new ArgumentNullException("token inválido");
+            ?? throw new ExceptionApi("token inválido");
         var numero = claimsIdentity.Claims.FirstOrDefault(c => c.Type == "Numero")?.Value
-            ?? throw new ArgumentNullException("token inválido");
+            ?? throw new ExceptionApi("token inválido");
         var nome = claimsIdentity.Claims.FirstOrDefault(c => c.Type == "Nome")?.Value
-            ?? throw new ArgumentNullException("token inválido");
+            ?? throw new ExceptionApi("token inválido");
         var email = claimsIdentity.Claims.FirstOrDefault(c => c.Type == "Email")?.Value
-            ?? throw new ArgumentNullException("token inválido");
+            ?? throw new ExceptionApi("token inválido");
 
         return new UsuarioViewModel()
         {
