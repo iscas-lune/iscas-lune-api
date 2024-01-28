@@ -1,4 +1,5 @@
 ﻿using iscas_lune_api.Application.Interfaces;
+using iscas_lune_api.Attributes;
 using iscas_lune_api.Discord.Client;
 using iscas_lune_api.Dtos.Pedidos;
 using iscas_lune_api.Exceptions;
@@ -43,6 +44,9 @@ public class PedidoController : ControllerBaseIscasLune
         }
     }
 
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [IsFuncionario]
+    [EnableCors("iscasluneoriginadmin")]
     [HttpPut("update-status")]
     public async Task<IActionResult> UpdateStatusPedido(UpdateStatusPedidoDto updateStatusPedidoDto)
     {

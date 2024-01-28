@@ -8,4 +8,5 @@ public interface ITokenService
     string GenerateToken(Usuario usuario);
     string GenerateTokenFuncionario(Funcionario funcionario);
     UsuarioViewModel GetClaims();
+    bool IsFuncionario();
 }

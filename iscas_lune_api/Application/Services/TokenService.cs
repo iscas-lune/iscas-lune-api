@@ -63,6 +63,7 @@ public class TokenService : ITokenService
             new Claim("Email", funcionario.Email),
             new Claim("Numero", funcionario.Numero.ToString()),
             new Claim("Id", funcionario.Id.ToString()),
+            new Claim("IsFuncionario", "TRUE"),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
@@ -85,9 +86,11 @@ public class TokenService : ITokenService
         return tokenString;
     }
 
+
     public UsuarioViewModel GetClaims()
     {
-        if (_httpContextAccessor?.HttpContext?.User.Identity is not ClaimsIdentity claimsIdentity || !claimsIdentity.Claims.Any())
+        if (_httpContextAccessor?.HttpContext?.User.Identity is not ClaimsIdentity claimsIdentity 
+            || !claimsIdentity.Claims.Any())
             throw new ExceptionApi(nameof(claimsIdentity));
 
         var id = claimsIdentity.Claims.FirstOrDefault(c => c.Type == "Id")?.Value
@@ -106,5 +109,16 @@ public class TokenService : ITokenService
             Email = email,
             Numero = long.Parse(numero)
         };
+    }
+
+    public bool IsFuncionario()
+    {
+        if (_httpContextAccessor?.HttpContext?.User.Identity is not ClaimsIdentity claimsIdentity
+            || !claimsIdentity.Claims.Any())
+            throw new ExceptionApi(nameof(claimsIdentity));
+
+        var isFuncionario = claimsIdentity.Claims.FirstOrDefault(c => c.Type == "IsFuncionario")?.Value;
+
+        return !string.IsNullOrWhiteSpace(isFuncionario);
     }
 }

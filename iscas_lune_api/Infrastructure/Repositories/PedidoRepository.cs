@@ -27,7 +27,7 @@ public class PedidoRepository : GenericRepository<Pedido>, IPedidoRepository
             .AsNoTracking()
             .AsQueryable()
             .OrderByDescending(x => x.Numero)
-            .Include(x => x.ItensPedido)
+            .Include(x => x.Usuario)
             .Skip(page * take)
             .Take(take)
             .ToListAsync();
