@@ -29,7 +29,6 @@ public class TamanhoRepository
         return await _context
             .Tamanhos
             .AsQueryable()
-            .FilterAll(paginacaoTamanhoDto)
             .AsNoTracking()
             .ToListAsync();
     }

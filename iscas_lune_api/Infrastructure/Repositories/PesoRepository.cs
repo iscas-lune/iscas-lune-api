@@ -28,7 +28,6 @@ public class PesoRepository : GenericRepository<Peso>, IPesoRepository
             .Pesos
             .AsNoTracking()
             .AsQueryable()
-            .FilterAll(filterModel)
             .ToListAsync();
     }
 }

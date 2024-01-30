@@ -33,7 +33,7 @@ public class CategoriaRepository
             .AsQueryable()
             .AsNoTracking()
             .Include(x => x.Produtos)
-            .FilterAll(paginacaoCategoriaDto)
+            //.FilterAll(paginacaoCategoriaDto)
             .ToListAsync();
 
         foreach (var categoria in categorias)
