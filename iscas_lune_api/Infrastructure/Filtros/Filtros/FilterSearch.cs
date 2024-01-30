@@ -66,4 +66,12 @@ public static class FilterSearch
 
         return result.Where(lambda);
     }
+
+    public static IQueryable<TEntity> WhereIsNotNull<TEntity>(this IQueryable<TEntity> querable, object? obj, Expression<Func<TEntity, bool>> where)
+    {
+        if (obj != null)
+            querable = querable.Where(where);
+
+        return querable;
+    }
 }

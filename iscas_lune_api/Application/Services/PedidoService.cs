@@ -44,9 +44,9 @@ public class PedidoService : IPedidoService
         return (null, true);
     }
 
-    public async Task<PaginacaoViewModel<PedidoViewModel>> GetPaginacaoAsync(int page)
+    public async Task<PaginacaoViewModel<PedidoViewModel>> GetPaginacaoAsync(PaginacaoPedidoDto paginacaoPedidoDto)
     {
-        var paginacao = await _pedidoRepository.GetPaginacaoPedidoAsync(page);
+        var paginacao = await _pedidoRepository.GetPaginacaoPedidoAsync(paginacaoPedidoDto);
 
         return new()
         {

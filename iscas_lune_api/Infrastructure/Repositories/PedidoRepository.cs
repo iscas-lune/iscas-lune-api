@@ -1,10 +1,14 @@
 ﻿using iscas_lune_api.Domain.Entities;
+using iscas_lune_api.Dtos.Pedidos;
 using iscas_lune_api.Infrastructure.Interfaces;
 using iscas_lune_api.Model.Paginacao;
 using iscas_lune_api.Model.Pedidos;
 using iscaslune.Api.Domain.Context;
+using iscaslune.Api.Infrastructure.Filtros.Filtros;
 using iscaslune.Api.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace iscas_lune_api.Infrastructure.Repositories;
 
@@ -16,20 +20,28 @@ public class PedidoRepository : GenericRepository<Pedido>, IPedidoRepository
         _context = context;
     }
 
-    public async Task<PaginacaoViewModel<Pedido>> GetPaginacaoPedidoAsync(int page)
+    public async Task<PaginacaoViewModel<Pedido>> GetPaginacaoPedidoAsync(PaginacaoPedidoDto paginacaoPedidoDto)
     {
-        var take = 10;
-        var count = await _context.Pedidos.CountAsync();
-        var totalPages = (int)Math.Ceiling((decimal)count / take);
+        Expression<Func<Pedido, bool>> whereSearch = x => x.Usuario.Nome.ToLower().Contains(paginacaoPedidoDto.Search.ToLower());
+        var count = await _context
+            .Pedidos
+            .AsNoTracking()
+            .AsQueryable()
+            .WhereIsNotNull(paginacaoPedidoDto.Search, whereSearch)
+            .WhereIsNotNull(paginacaoPedidoDto.StatusPedido, x => x.StatusPedido == (StatusPedido)paginacaoPedidoDto.StatusPedido)
+            .CountAsync();
+        var totalPages = (int)Math.Ceiling((decimal)count / paginacaoPedidoDto.Take);
 
         var pedidos = await _context
             .Pedidos
             .AsNoTracking()
             .AsQueryable()
-            .OrderByDescending(x => x.Numero)
+            .OrderByDescending(x => EF.Property<Pedido>(x, paginacaoPedidoDto.OrderBy))
             .Include(x => x.Usuario)
-            .Skip(page * take)
-            .Take(take)
+            .Skip(paginacaoPedidoDto.Skip * paginacaoPedidoDto.Take)
+            .Take(paginacaoPedidoDto.Take)
+            .WhereIsNotNull(paginacaoPedidoDto.Search, whereSearch)
+            .WhereIsNotNull(paginacaoPedidoDto.StatusPedido, x => x.StatusPedido == (StatusPedido)paginacaoPedidoDto.StatusPedido)
             .ToListAsync();
 
         return new()

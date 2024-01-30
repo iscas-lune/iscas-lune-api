@@ -87,13 +87,14 @@ public class PedidoController : ControllerBaseIscasLune
     }
 
     [Authorize(AuthenticationSchemes = "Bearer")]
+    [IsFuncionario]
     [EnableCors("iscasluneoriginadmin")]
     [HttpGet("paginacao")]
-    public async Task<IActionResult> Paginacao([FromQuery] int page)
+    public async Task<IActionResult> Paginacao([FromQuery] PaginacaoPedidoDto paginacaoPedidoDto)
     {
         try
         {
-            var paginacaoViewModel = await _pedidoService.GetPaginacaoAsync(page);
+            var paginacaoViewModel = await _pedidoService.GetPaginacaoAsync(paginacaoPedidoDto);
             return Ok(paginacaoViewModel);
         }
         catch (ExceptionApi ex)
